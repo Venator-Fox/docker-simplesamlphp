@@ -1,3 +1,4 @@
+[![](https://images.microbadger.com/badges/version/venatorfox/simplesamlphp:1.14.15.svg)](https://microbadger.com/images/venatorfox/simplesamlphp:1.14.15 "Get your own version badge on microbadger.com") [![](https://images.microbadger.com/badges/image/venatorfox/simplesamlphp:1.14.15.svg)](https://microbadger.com/images/venatorfox/simplesamlphp:1.14.15 "Get your own image badge on microbadger.com") [![Pulls on Docker Hub](https://img.shields.io/docker/pulls/venatorfox/simplesamlphp.svg)](https://hub.docker.com/r/venatorfox/simplesamlphp)  [![Stars on Docker Hub](https://img.shields.io/docker/stars/venatorfox/simplesamlphp.svg)](https://hub.docker.com/r/venatorfox/simplesamlphp) [![GitHub Open Issues](https://img.shields.io/github/issues/Venator-Fox/docker-simplesamlphp.svg)](https://github.com/Venator-Fox/docker-simplesamlphp/issues) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 ### Supported tags and respective `Dockerfile` links
 
 -	[`1.14.15`, `latest` (*1.14.15/Dockerfile*)](https://github.com/Venator-Fox/docker-simplesamlphp/blob/master/1.14.15/Dockerfile)
@@ -118,7 +119,7 @@ Default CONFIG_MEMCACHESTORESERVERS format, 2 pair of 2 example. Use this templa
 ### Maintenance
 
 This is being actively maintained and is running in production.
-Please [create an issue](https://github.com/Venator-Fox/docker-simpleasmlphp/issues) if needed or if additional variables/features are desired.
+Please [create an issue](https://github.com/Venator-Fox/docker-simplesamlphp/issues) if needed or if additional variables/features are desired.
 
 ### Todos
  - Figure out logging to docker stdio
@@ -127,7 +128,7 @@ Please [create an issue](https://github.com/Venator-Fox/docker-simpleasmlphp/iss
 
 ### More Complex/Practical Compose Example, IdP SSL Termination with HAProxy
 This example will run HAProxy with snakeoil SSL termination for https://localhost.
-It will also bring up 4 memcached containers, 2 pairs of 2, for php session.
+It will also bring up 4 memcached containers, 2 pairs of 2, for phpsession.
 This is useful for running a SimpleSAMLphp cluster via some orchestration service such as Rancher.
 
 Since SimpleSAMLphp will not care about the webroot, an entry to the hosts file can be added to whatever for testing. 
