@@ -118,7 +118,7 @@ Default CONFIG_MEMCACHESTORESERVERS format, 2 pair of 2 example. Use this templa
 ### Maintenance
 
 This is being actively maintained and is running in production.
-Please [create an issue](https://github.com/Venator-Fox/docker-simpleasmlphp/issues) if needed or if additional variables/features are desired.
+Please [create an issue](https://github.com/Venator-Fox/docker-simplesamlphp/issues) if needed or if additional variables/features are desired.
 
 ### Todos
  - Figure out logging to docker stdio
