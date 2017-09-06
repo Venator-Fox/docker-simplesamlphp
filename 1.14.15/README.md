@@ -10,7 +10,7 @@ Useless Simple Example: To startup an unconfigured local install with default va
 Start a `venatorfox/simplesamlphp` instance, expose port 80.
 
 ```console
-$ docker run --name some-simplesamlphp venatorfox/simplesamlphp:latest
+$ docker run --name some-simplesamlphp -p80:80 venatorfox/simplesamlphp:latest
 ```
 Visit the site at http://localhost, default unconfigured username is "admin" and password is "123". #superSecure 
 
