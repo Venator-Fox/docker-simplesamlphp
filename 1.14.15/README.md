@@ -127,7 +127,7 @@ Please [create an issue](https://github.com/Venator-Fox/docker-simplesamlphp/iss
 
 ### More Complex/Practical Compose Example, IdP SSL Termination with HAProxy
 This example will run HAProxy with snakeoil SSL termination for https://localhost.
-It will also bring up 4 memcached containers, 2 pairs of 2, for php session.
+It will also bring up 4 memcached containers, 2 pairs of 2, for phpsession.
 This is useful for running a SimpleSAMLphp cluster via some orchestration service such as Rancher.
 
 Since SimpleSAMLphp will not care about the webroot, an entry to the hosts file can be added to whatever for testing. 
