@@ -1,4 +1,5 @@
 [![](https://images.microbadger.com/badges/version/venatorfox/simplesamlphp:1.14.16.svg)](https://microbadger.com/images/venatorfox/simplesamlphp:1.14.16 "Get your own version badge on microbadger.com") [![](https://images.microbadger.com/badges/image/venatorfox/simplesamlphp:1.14.16.svg)](https://microbadger.com/images/venatorfox/simplesamlphp:1.14.16 "Get your own image badge on microbadger.com") [![Pulls on Docker Hub](https://img.shields.io/docker/pulls/venatorfox/simplesamlphp.svg)](https://hub.docker.com/r/venatorfox/simplesamlphp)  [![Stars on Docker Hub](https://img.shields.io/docker/stars/venatorfox/simplesamlphp.svg)](https://hub.docker.com/r/venatorfox/simplesamlphp) [![GitHub Open Issues](https://img.shields.io/github/issues/Venator-Fox/docker-simplesamlphp.svg)](https://github.com/Venator-Fox/docker-simplesamlphp/issues) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 Supported tags and respective `Dockerfile` links
 
 - [`1.14.16`, `latest` (*1.14.16/Dockerfile*)](https://github.com/Venator-Fox/docker-simplesamlphp/blob/master/1.14.16/Dockerfile)
