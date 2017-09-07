@@ -269,7 +269,7 @@ if [ "$CONFIG_STORETYPE" == "memcache" ]; then
   fi
 fi
 
-chown php-fpm:php-fpm /var/simplesamlphp/log
+chown php-fpm:php-fpm /var/simplesamlphp/log/
 
 touch /var/simplesamlphp/config/.dockersetupdone
 
