@@ -6,6 +6,7 @@ services:
     container_name: simplesamlphp
     image: venatorfox/simplesamlphp:1.14.16
     environment:
+      - CONFIG_BASEURLPATH=https://localhost/simplesaml/
 # To login to this example setup, use 123 for the password.
       - CONFIG_AUTHADMINPASSWORD={SSHA256}MjJSiMlkQLa+fqI+CmQ1x1oUJ7OGucYpznKxBBHpgfC+Oh+7B9vgGw==
       - CONFIG_SECRETSALT=exampleabcdefghijklmnopqrstuvwxy

@@ -4,6 +4,8 @@
 
 DOCKER_REDIRECTLOGS=${DOCKER_REDIRECTLOGS:=false}
 
+CONFIG_BASEURLPATH=${CONFIG_BASEURLPATH:=simplesaml/}
+
 #This SSHA256 hash is '123' for the default password.
 CONFIG_AUTHADMINPASSWORD=${CONFIG_AUTHADMINPASSWORD:=\{SSHA256\}MjJSiMlkQLa+fqI+CmQ1x1oUJ7OGucYpznKxBBHpgfC+Oh+7B9vgGw==}
 CONFIG_SECRETSALT=${CONFIG_SECRETSALT:=defaultsecretsalt}
@@ -212,6 +214,8 @@ echo "TLS_REQCERT=$OPENLDAP_TLS_REQCERT" >> /etc/openldap/ldap.conf
 echo "[$0] Apply Configuration to config.php..."
 
 #Apply Configurations
+sed -i "s|'baseurlpath' => 'simplesaml/'|'baseurlpath' => '$CONFIG_BASEURLPATH'|g" /var/simplesamlphp/config/config.php
+
 sed -i "s|'auth.adminpassword' => '123'|'auth.adminpassword' => '$CONFIG_AUTHADMINPASSWORD'|g" /var/simplesamlphp/config/config.php
 sed -i "s|'secretsalt' => 'defaultsecretsalt'|'secretsalt' => '$CONFIG_SECRETSALT'|g" /var/simplesamlphp/config/config.php
 sed -i "s|'technicalcontact_name' => 'Administrator'|'technicalcontact_name' => '$CONFIG_TECHNICALCONTACT_NAME'|g" /var/simplesamlphp/config/config.php
@@ -269,7 +273,7 @@ if [ "$CONFIG_STORETYPE" == "memcache" ]; then
   fi
 fi
 
-chown php-fpm:php-fpm /var/simplesamlphp/log/
+chown php-fpm:php-fpm /var/simplesamlphp/log
 
 touch /var/simplesamlphp/config/.dockersetupdone
 
