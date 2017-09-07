@@ -4,7 +4,7 @@ MAINTAINER Adam Zheng adam.w.zheng@icloud.com
 ENV S6_RELEASE 1.20.0.0
 ENV SIMPLESAMLPHP_RELEASE 1.14.16
 
-#Add S6 Overlay (Build via Docker 1.12)
+#Add S6 Overlay
 ADD https://github.com/just-containers/s6-overlay/releases/download/v$S6_RELEASE/s6-overlay-amd64.tar.gz /tmp/
 RUN tar xzf /tmp/s6-overlay-amd64.tar.gz -C / --exclude="./bin" \
  && tar xzf /tmp/s6-overlay-amd64.tar.gz -C /usr ./bin
@@ -43,7 +43,8 @@ RUN mkdir -p /etc/services.d/nginx/ \
 RUN mkdir -p /etc/services.d/php-fpm/ \
  && touch /etc/services.d/php-fpm/run \
  && echo '#!/usr/bin/execlineb -P' > /etc/services.d/php-fpm/run \
- && echo '/usr/sbin/php-fpm' >> /etc/services.d/php-fpm/run --nodaemonize
+ && echo '/usr/sbin/php-fpm' >> /etc/services.d/php-fpm/run --nodaemonize \
+ && sed -i 's|pid = /run/php-fpm/php-fpm.pid|pid = /run/php-fpm.pid|g' /etc/php-fpm.conf
 
 #Copy the SimpleSAMLphp CLI Install Script into the Container to be executed on startup
 COPY install-simplesamlphp.sh /etc/cont-init.d/
