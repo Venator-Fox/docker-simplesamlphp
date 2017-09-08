@@ -46,7 +46,7 @@ CONFIG_THEMEUSE=${CONFIG_THEMEUSE:=default}
 CONFIG_STORETYPE=${CONFIG_STORETYPE:=phpsession}
 
 WWW_INDEX=${WWW_INDEX:=core/frontpage_welcome.php}
-echo -e "TLS_REQCERT\t$OPENLDAP_TLS_REQCERT" >> /etc/openldap/ldap.conf
+OPENLDAP_TLS_REQCERT=${OPENLDAP_TLS_REQCERT:=demand}
 
 if [ "$DOCKER_REDIRECTLOGS" = "true" ]; then
   echo "[$0] DOCKER_REDIRECTLOGS was set to 'true', so setting CONFIG_LOGGINGHANDLER to 'file'"
@@ -207,7 +207,7 @@ if ! [ $? -ne 0 ]; then
 fi
 
 #Apply server certificate check in a TLS session
-echo "TLS_REQCERT=$OPENLDAP_TLS_REQCERT" >> /etc/openldap/ldap.conf
+echo -e "TLS_REQCERT\t$OPENLDAP_TLS_REQCERT" >> /etc/openldap/ldap.conf
 
 #Configure SimpleSAMLphp from runtime variables.
 
