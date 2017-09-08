@@ -46,7 +46,7 @@ CONFIG_THEMEUSE=${CONFIG_THEMEUSE:=default}
 CONFIG_STORETYPE=${CONFIG_STORETYPE:=phpsession}
 
 WWW_INDEX=${WWW_INDEX:=core/frontpage_welcome.php}
-OPENLDAP_TLS_REQCERT=${OPENLDAP_TLS_REQCERT:=demand}
+echo -e "TLS_REQCERT\t$OPENLDAP_TLS_REQCERT" >> /etc/openldap/ldap.conf
 
 if [ "$DOCKER_REDIRECTLOGS" = "true" ]; then
   echo "[$0] DOCKER_REDIRECTLOGS was set to 'true', so setting CONFIG_LOGGINGHANDLER to 'file'"
@@ -273,7 +273,7 @@ if [ "$CONFIG_STORETYPE" == "memcache" ]; then
   fi
 fi
 
-chown php-fpm:php-fpm /var/simplesamlphp/log
+chown php-fpm:php-fpm /var/simplesamlphp/log/
 
 touch /var/simplesamlphp/config/.dockersetupdone
 
