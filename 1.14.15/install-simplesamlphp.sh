@@ -207,7 +207,7 @@ if ! [ $? -ne 0 ]; then
 fi
 
 #Apply server certificate check in a TLS session
-echo "TLS_REQCERT=$OPENLDAP_TLS_REQCERT" >> /etc/openldap/ldap.conf
+echo -e "TLS_REQCERT\t$OPENLDAP_TLS_REQCERT" >> /etc/openldap/ldap.conf
 
 #Configure SimpleSAMLphp from runtime variables.
 
