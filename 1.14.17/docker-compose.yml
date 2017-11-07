@@ -4,7 +4,7 @@ services:
 
   idp01-simplesamlphp:
     container_name: idp01-simplesamlphp
-    image: local
+    image: venatorfox/simplesamlphp:1.14.17
     environment:
       - CONFIG_BASEURLPATH=https://localhost/simplesaml/
 # To login to this example setup, use 123 for the password.
