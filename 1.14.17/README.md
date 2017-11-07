@@ -133,6 +133,8 @@ This example will run HAProxy with snakeoil SSL termination for https://localhos
 It will also bring up 4 memcached containers, 2 pairs of 2, for phpsession.
 This is useful for running a SimpleSAMLphp cluster via some orchestration service such as Rancher.
 
+You will need the `haproxy.cfg` and `docker-compose.yml` files from the Git repository.
+
 Since SimpleSAMLphp will not care about the webroot, an entry to the hosts file can be added to whatever for testing. 
 Be sure to adjust the HOST environment variable below for whatever localhost self-signed certificate desired.
 Of course in production use a real CA, like LetsEncrypt.
