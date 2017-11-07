@@ -2,7 +2,7 @@
 
 Supported tags and respective `Dockerfile` links
 
-- [`1.14.16`, `latest` (*1.14.17/Dockerfile*)](https://github.com/Venator-Fox/docker-simplesamlphp/blob/master/1.14.17/Dockerfile)
+- [`1.14.17`, `latest` (*1.14.17/Dockerfile*)](https://github.com/Venator-Fox/docker-simplesamlphp/blob/master/1.14.17/Dockerfile)
 - [`1.14.16` (*1.14.16/Dockerfile*)](https://github.com/Venator-Fox/docker-simplesamlphp/blob/master/1.14.16/Dockerfile)
 - [`1.14.15` (*1.14.15/Dockerfile*)](https://github.com/Venator-Fox/docker-simplesamlphp/blob/master/1.14.15/Dockerfile)
 
