@@ -31,14 +31,15 @@ services:
 #     - WWW_INDEX=core/authenticate.php?as=admin
       - OPENLDAP_TLS_REQCERT=always
     volumes:
-#     - /opt/docker/volumes/idp-simplesamlphp/config/authsources.php:/var/simplesamlphp/config/authsources.php
-      - /opt/docker/volumes/idp-simplesamlphp/cert/:/var/simplesamlphp/cert/
-      - /opt/docker/volumes/idp-simplesamlphp/dictionaries/:/var/simplesamlphp/dictionaries/
-      - /opt/docker/volumes/idp-simplesamlphp/log/:/var/simplesamlphp/log
-      - /opt/docker/volumes/idp-simplesamlphp/metadata/:/var/simplesamlphp/metadata
-      - /opt/docker/volumes/idp-simplesamlphp/modules/:/var/simplesamlphp/modules
-      - /opt/docker/volumes/idp-simplesamlphp/templates/:/var/simplesamlphp/templates
-      - /opt/docker/volumes/idp-simplesamlphp/www/:/var/simplesamlphp/www
+#     - /opt/docker/volumes/idp-simplesamlphp/cache/:/var/simplesamlphp/cache/:Z
+#     - /opt/docker/volumes/idp-simplesamlphp/config/authsources.php:/var/simplesamlphp/config/authsources.php:Z
+      - /opt/docker/volumes/idp-simplesamlphp/cert/:/var/simplesamlphp/cert/:Z
+      - /opt/docker/volumes/idp-simplesamlphp/locales/:/var/simplesamlphp/locales/:Z
+      - /opt/docker/volumes/idp-simplesamlphp/log/:/var/simplesamlphp/log/:Z
+      - /opt/docker/volumes/idp-simplesamlphp/metadata/:/var/simplesamlphp/metadata/:Z
+      - /opt/docker/volumes/idp-simplesamlphp/modules/:/var/simplesamlphp/modules/:Z
+      - /opt/docker/volumes/idp-simplesamlphp/templates/:/var/simplesamlphp/templates/:Z
+      - /opt/docker/volumes/idp-simplesamlphp/www/:/var/simplesamlphp/www/:Z
     restart: always
 
   a01-memcached:
