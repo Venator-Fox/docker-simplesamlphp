@@ -51,15 +51,17 @@ This will vary greatly depending on use. A compose file similar to a production 
 
 | Directory | Opinion |
 | ------ | ------ |
-| /var/simplesamlphp/attributemap | -- |
+| /var/simplesamlphp/attributemap | Mount if additional mappings are needed. |
 | /var/simplesamlphp/bin | Probably should not be volume mounted. |
+| /var/simplesamlphp/cache | -- |
 | /var/simplesamlphp/cert | Should always be volume mounted. |
 | /var/simplesamlphp/config | Should probably not be volume mounted as its mostly configured by docker. |
 | /var/simplesamlphp/config-templates | -- |
-| /var/simplesamlphp/dictionaries | Can be mounted for customized user messages. |
+| /var/simplesamlphp/dictionaries | Depreciated as of 1.15.0. Use locales instead. |
 | /var/simplesamlphp/docs | -- |
 | /var/simplesamlphp/extra | -- |
 | /var/simplesamlphp/lib | -- |
+| /var/simplesamlphp/locales | Mount for customized user messages and translations. |
 | /var/simplesamlphp/log | If using docker log redirection (not working yet), this cannot be volume mounted. If docker logs write to a file, this should be volume mounted so logs do not grow inside the container. |
 | /var/simplesamlphp/metadata | Should always be volume mounted, very specific to organization. |
 | /var/simplesamlphp/metadata-templates | -- |
