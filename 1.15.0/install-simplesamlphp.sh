@@ -62,13 +62,14 @@ if [ "$DOCKER_REDIRECTLOGS" = "true" ]; then
       echo "[$0] [WARN] DOCKER_REDIRECTLOGS is set to true but the log directory is volume mounted. It makes no sense to do this as logs are redirected to a pipe."
       echo "[$0] If a simplesamlphp logfile is desired instead of docker logs, set DOCKER_REDIRECTLOGS to 'false'."
       echo "[$0] Pausing 5 seconds due to above warning."
-    sleep 5
+      sleep 5
     fi
   else
     if [ "$CONFIG_LOGGINGHANDLER" = "file" ]; then
       echo "[$0] [WARN] CONFIG_LOGGINGHANDLER is set to 'file'  but the log directory is not volume mounted."
       echo "[$0] [WARN] This will cause the container to grow with a logfile and is in most cases very undesirable."
       echo "[$0] Pausing 5 seconds due to above warning."
+      sleep 5
     fi
   fi
   ln -sf /proc/1/fd/1 /var/simplesamlphp/log/$CONFIG_LOGFILE
@@ -103,8 +104,8 @@ else
   ls -A /var/simplesamlphp/cert/breadcrumb &> /dev/null
   if ! [ $? -ne 0 ]; then
     echo "[$0] [WARN] cert directory is not volume mounted and probably should be."
-    echo "[$0] Pausing 3 seconds due to above warning."
-    sleep 3
+    echo "[$0] Pausing 5 seconds due to above warning."
+    sleep 5
   fi
   if [ -z "$(ls -A /var/simplesamlphp/config/)" ]; then
     echo "[$0] config directory seems to be Docker volume mounted as it is empty. Seeding."
@@ -123,6 +124,9 @@ else
     tar xzvf /var/simplesamlphp.tar.gz simplesamlphp*/dictionaries > /dev/null
     mv /simplesamlphp-1.*/dictionaries/* /var/simplesamlphp/dictionaries/
     echo "[$0] Seed complete. Directory dictionaries will not be part of future upgrades and will need upgraded manually."
+    echo "[$0] [WARN] usage of dictionaries are deprecated in 1.15.0 and will be removed in 2.0. Use locales instead."
+    echo "[$0] Pausing 5 seconds due to above warning."
+    sleep 5
   fi
   if [ -z "$(ls -A /var/simplesamlphp/docs/)" ]; then
     echo "[$0] docs directory seems to be Docker volume mounted as it is empty. Seeding."
@@ -141,6 +145,12 @@ else
     tar xzvf /var/simplesamlphp.tar.gz simplesamlphp*/lib > /dev/null
     mv /simplesamlphp-1.*/lib/* /var/simplesamlphp/lib/
     echo "[$0] Seed complete. Directory lib will not be part of future upgrades and will need upgraded manually."
+  fi
+  if [ -z "$(ls -A /var/simplesamlphp/locales/)" ]; then
+    echo "[$0] locales directory seems to be Docker volume mounted as it is empty. Seeding."
+    tar xzvf /var/simplesamlphp.tar.gz simplesamlphp*/locales > /dev/null
+    mv /simplesamlphp-1.*/locales/* /var/simplesamlphp/locales/
+    echo "[$0] Seed complete. Directory locales will not be part of future upgrades and will need upgraded manually."
   fi
   if [ -z "$(ls -A /var/simplesamlphp/metadata/)" ]; then
     echo "[$0] metadata directory seems to be Docker volume mounted as it is empty. Seeding."
