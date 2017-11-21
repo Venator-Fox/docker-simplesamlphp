@@ -148,8 +148,8 @@ else
   fi
   if [ -z "$(ls -A /var/simplesamlphp/locales/)" ]; then
     echo "[$0] locales directory seems to be Docker volume mounted as it is empty. Seeding."
-    tar xzvf /var/simplesamlphp.tar.gz simplesamlphp*/lib > /dev/null
-    mv /simplesamlphp-1.*/lib/* /var/simplesamlphp/lib/
+    tar xzvf /var/simplesamlphp.tar.gz simplesamlphp*/locales > /dev/null
+    mv /simplesamlphp-1.*/locales/* /var/simplesamlphp/locales/
     echo "[$0] Seed complete. Directory locales will not be part of future upgrades and will need upgraded manually."
   fi
   if [ -z "$(ls -A /var/simplesamlphp/metadata/)" ]; then
