@@ -1,11 +1,13 @@
-[![](https://images.microbadger.com/badges/version/venatorfox/simplesamlphp:1.15.0.svg)](https://github.com/Venator-Fox/docker-simplesamlphp/network "View Network") [![](https://images.microbadger.com/badges/image/venatorfox/simplesamlphp:1.15.0.svg)](https://microbadger.com/images/venatorfox/simplesamlphp:1.15.0 "View layer metadata on MicroBadger") [![Pulls on Docker Hub](https://img.shields.io/docker/pulls/venatorfox/simplesamlphp.svg)](https://hub.docker.com/r/venatorfox/simplesamlphp)  [![Stars on Docker Hub](https://img.shields.io/docker/stars/venatorfox/simplesamlphp.svg)](https://hub.docker.com/r/venatorfox/simplesamlphp) [![GitHub Open Issues](https://img.shields.io/github/issues/Venator-Fox/docker-simplesamlphp.svg)](https://github.com/Venator-Fox/docker-simplesamlphp/issues) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![](https://images.microbadger.com/badges/version/venatorfox/simplesamlphp:1.17.1.svg)](https://github.com/Venator-Fox/docker-simplesamlphp/network "View Network") [![](https://images.microbadger.com/badges/image/venatorfox/simplesamlphp:1.15.0.svg)](https://microbadger.com/images/venatorfox/simplesamlphp:1.15.0 "View layer metadata on MicroBadger") [![Pulls on Docker Hub](https://img.shields.io/docker/pulls/venatorfox/simplesamlphp.svg)](https://hub.docker.com/r/venatorfox/simplesamlphp)  [![Stars on Docker Hub](https://img.shields.io/docker/stars/venatorfox/simplesamlphp.svg)](https://hub.docker.com/r/venatorfox/simplesamlphp) [![GitHub Open Issues](https://img.shields.io/github/issues/Venator-Fox/docker-simplesamlphp.svg)](https://github.com/Venator-Fox/docker-simplesamlphp/issues) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 Supported tags and respective `Dockerfile` links
+> ~~Depreciated~~ builds are not recommended, as they utilized php56 which is EOL as of the end of 2018.
 
-- [`1.15.0`, `latest` (*1.15.0/Dockerfile*)](https://github.com/Venator-Fox/docker-simplesamlphp/blob/master/1.15.0/Dockerfile)
-- [`1.14.17` (*1.14.17/Dockerfile*)](https://github.com/Venator-Fox/docker-simplesamlphp/blob/master/1.14.17/Dockerfile)
-- [`1.14.16` (*1.14.16/Dockerfile*)](https://github.com/Venator-Fox/docker-simplesamlphp/blob/master/1.14.16/Dockerfile)
-- [`1.14.15` (*1.14.15/Dockerfile*)](https://github.com/Venator-Fox/docker-simplesamlphp/blob/master/1.14.15/Dockerfile)
+- [`1.17.1`, `latest` (*1.17.1/Dockerfile*)](https://github.com/Venator-Fox/docker-simplesamlphp/blob/master/1.17.1/Dockerfile)
+- ~~[`1.15.0` (*1.15.0/Dockerfile*)](https://github.com/Venator-Fox/docker-simplesamlphp/blob/master/1.15.0/Dockerfile)~~
+- ~~[`1.14.17` (*1.14.17/Dockerfile*)](https://github.com/Venator-Fox/docker-simplesamlphp/blob/master/1.14.17/Dockerfile)~~
+- ~~[`1.14.16` (*1.14.16/Dockerfile*)](https://github.com/Venator-Fox/docker-simplesamlphp/blob/master/1.14.16/Dockerfile)~~
+- ~~[`1.14.15` (*1.14.15/Dockerfile*)](https://github.com/Venator-Fox/docker-simplesamlphp/blob/master/1.14.15/Dockerfile)~~
 
 ### How to use this image
 
@@ -57,6 +59,7 @@ This will vary greatly depending on use. A compose file similar to a production 
 | /var/simplesamlphp/cert | Should always be volume mounted. |
 | /var/simplesamlphp/config | Should probably not be volume mounted as its mostly configured by docker. |
 | /var/simplesamlphp/config-templates | -- |
+| /var/simplesamlphp/data | -- |
 | /var/simplesamlphp/dictionaries | Depreciated as of 1.15.0. Use locales instead. |
 | /var/simplesamlphp/docs | -- |
 | /var/simplesamlphp/extra | -- |
@@ -67,9 +70,9 @@ This will vary greatly depending on use. A compose file similar to a production 
 | /var/simplesamlphp/metadata-templates | -- |
 | /var/simplesamlphp/modules | Can be volume mounted for easier module customization |
 | /var/simplesamlphp/schemas | -- |
+| /var/simplesamlphp/src | -- |
 | /var/simplesamlphp/templates | -- |
 | /var/simplesamlphp/tests | -- |
-| /var/simplesamlphp/tools | -- |
 | /var/simplesamlphp/vendor | -- |
 | /var/simplesamlphp/www | Can be volume mounted for easier www customization |
 
@@ -104,6 +107,9 @@ It is recommended to set them properly and not use default values.
 | CONFIG_SESSIONDATASTORETIMEOUT | (4 * 60 * 60) | -- |
 | CONFIG_SESSIONSTATETIMEOUT | (60 * 60) | -- |
 | CONFIG_SESSIONCOOKIELIFETIME | 0 | -- |
+| CONFIG_SESSIONPHPSESSIONCOOKIENAME | SimpleSAML | -- |
+| CONFIG_SESSIONPHPSESSIONSAVEPATH | null | This must be set to a valid path if using phpsession, otherwise a redirect loop on login will occur. `/var/lib/php/session/` will be inserted if phpsession is used while this value is still unconfigured. |
+| CONFIG_SESSIONPHPSESSIONHTTPONLY | true | -- |
 | CONFIG_SESSIONREMEMBERMEENABLE | false | -- |
 | CONFIG_SESSIONREMEMBERMECHECKED | false | -- |
 | CONFIG_SESSIONREMEMBERMELIFETIME | (14 * 86400) | -- |
@@ -123,7 +129,7 @@ Default CONFIG_MEMCACHESTORESERVERS format, 2 pair of 2 example. Use this templa
 
 ### Maintenance
 
-This is being actively maintained and is running in production.
+This is being actively maintained and is running in production for several organizations.
 Please [create an issue](https://github.com/Venator-Fox/docker-simplesamlphp/issues) if needed or if additional variables/features are desired.
 
 ### Todos
@@ -162,3 +168,8 @@ Finally, save the v2 compose file as `docker-compose.yml` somewhere.
 Run `docker-compose -f docker-compose.yml up` to bring the stack up.
 After install, visit https://localhost (or whatever URL you chose)
 Use `docker-compose -f docker-compose.yml down` to destroy containers after playing.
+
+### Example using systemd
+This is recommended for production for non-orchestrated installs. These unit files will start containers utilizing, memcached, haproxy, and simplesaml.
+
+//TODO
