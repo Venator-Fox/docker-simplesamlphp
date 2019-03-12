@@ -1,5 +1,5 @@
 FROM centos:7
-MAINTAINER Adam Zheng adam.w.zheng@icloud.com
+LABEL maintainer="Adam W Zheng <adam.w.zheng@icloud.com>"
 
 ENV S6_RELEASE 1.22.0.0
 ENV SIMPLESAMLPHP_RELEASE 1.17.1
