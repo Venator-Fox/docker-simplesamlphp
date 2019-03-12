@@ -29,8 +29,7 @@ RUN curl -Lo /var/simplesamlphp.tar.gz https://github.com/simplesamlphp/simplesa
  && tar xzf /var/simplesamlphp.tar.gz --directory /var \
  && mv /var/simplesamlphp-* /var/simplesamlphp \
  && touch /var/simplesamlphp/cert/breadcrumb \
- && touch /var/simplesamlphp/log/breadcrumb \
- && chown -Rv nginx:nginx /var/simplesamlphp/log/
+ && touch /var/simplesamlphp/log/breadcrumb
 
 #Redirect NGINX Logs
 RUN ln -sf /dev/stdout /var/opt/rh/rh-nginx114/log/nginx/access.log \
