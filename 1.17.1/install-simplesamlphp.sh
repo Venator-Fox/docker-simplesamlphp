@@ -36,6 +36,10 @@ CONFIG_SESSIONDATASTORETIMEOUT=${CONFIG_SESSIONDATASTORETIMEOUT:=(4 * 60 * 60)}
 CONFIG_SESSIONSTATETIMEOUT=${CONFIG_SESSIONSTATETIMEOUT:=(60 * 60)}
 CONFIG_SESSIONCOOKIELIFETIME=${CONFIG_SESSIONCOOKIELIFETIME:=0}
 
+CONFIG_SESSIONPHPSESSIONCOOKIENAME=${CONFIG_SESSIONPHPSESSIONCOOKIENAME:=SimpleSAML}
+CONFIG_SESSIONPHPSESSIONSAVEPATH=${CONFIG_SESSIONPHPSESSIONSAVEPATH:=null}
+CONFIG_SESSIONPHPSESSIONHTTPONLY=${CONFIG_SESSIONPHPSESSIONHTTPONLY:=true}
+
 CONFIG_SESSIONREMEMBERMEENABLE=${CONFIG_SESSIONREMEMBERMEENABLE:=false}
 CONFIG_SESSIONREMEMBERMECHECKED=${CONFIG_SESSIONREMEMBERMECHECKED:=false}
 CONFIG_SESSIONREMEMBERMELIFETIME=${CONFIG_SESSIONREMEMBERMELIFETIME:=(14 * 86400)}
@@ -255,6 +259,10 @@ sed -i "s|'session.datastore.timeout' => (4 \* 60 \* 60)|'session.datastore.time
 sed -i "s|'session.state.timeout' => (60 \* 60)|'session.state.timeout' => $CONFIG_SESSIONSTATETIMEOUT|g" /var/simplesamlphp/config/config.php
 sed -i "s|'session.cookie.lifetime' => 0|'session.cookie.lifetime' => $CONFIG_SESSIONCOOKIELIFETIME|g" /var/simplesamlphp/config/config.php
 
+sed -i "s|'session.phpsession.cookiename' => 'SimpleSAML'|'session.phpsession.cookiename' => '$CONFIG_SESSIONPHPSESSIONCOOKIENAME'|g" /var/simplesamlphp/config/config.php
+sed -i "s|'session.phpsession.savepath' => null|'session.phpsession.savepath' => '$CONFIG_SESSIONPHPSESSIONSAVEPATH'|g" /var/simplesamlphp/config/config.php
+sed -i "s|'session.phpsession.httponly' => true|'session.phpsession.httponly' => $CONFIG_SESSIONPHPSESSIONHTTPONLY|g" /var/simplesamlphp/config/config.php
+
 sed -i "s|'session.rememberme.enable' => false|'session.rememberme.enable' => $CONFIG_SESSIONREMEMBERMEENABLE|g" /var/simplesamlphp/config/config.php
 sed -i "s|'session.rememberme.checked' => false|'session.rememberme.checked' => $CONFIG_SESSIONREMEMBERMECHECKED|g" /var/simplesamlphp/config/config.php
 sed -i "s|'session.rememberme.lifetime' => (14 \* 86400)|'session.rememberme.lifetime' => $CONFIG_SESSIONREMEMBERMELIFETIME|g" /var/simplesamlphp/config/config.php
@@ -268,6 +276,16 @@ sed -i "s|'store.type'                    => 'phpsession',|'store.type'         
 
 sed -i "s|'core/frontpage_welcome.php'|'$WWW_INDEX'|g" /var/simplesamlphp/www/index.php
 
+#Check for valid phpsession configuration
+if [ "$CONFIG_STORETYPE" == "phpsession" ] && [ "$CONFIG_SESSIONPHPSESSIONSAVEPATH" == "null" ]; then
+  echo "[$0] [WARN] CONFIG_STORETYPE was set to 'phpsession', but CONFIG_SESSIONPHPSESSIONSAVEPATH was not set from null. This will not work. Setting CONFIG_SESSIONPHPSESSIONSAVEPATH to '/var/lib/php/session/'."
+  echo "[$0] To avoid this warning in the future, set CONFIG_SESSIONPHPSESSIONSAVEPATH to a valid value, '/var/lib/php/session' is the suggested default if phpsession is used."
+  echo "[$0] Pausing 5 seconds due to above warning."
+  sleep 5
+  CONFIG_SESSIONPHPSESSIONSAVEPATH=/var/lib/php/session/
+  sed -i "s|'session.phpsession.savepath' => 'null'|'session.phpsession.savepath' => '$CONFIG_SESSIONPHPSESSIONSAVEPATH'|g" /var/simplesamlphp/config/config.php
+fi
+
 #Only configure redundant memcache if storetype is set to memcache
 if [ "$CONFIG_STORETYPE" == "memcache" ]; then
   sed -i "/    'memcache_store.servers' => array(/{n;N;N;d}" /var/simplesamlphp/config/config.php 
@@ -278,7 +296,6 @@ if [ "$CONFIG_STORETYPE" == "memcache" ]; then
     echo "[$0] To avoid this warning in the future, set CONFIG_MEMCACHESTOREPREFIX to something, 'simpleSAMLphp' is the suggested default if memcache is enabled."
     echo "[$0] Pausing 5 seconds due to above warning."
     sleep 5
-    CONFIG_MEMCACHESTOREPREFIX=simplesamlphp
     sed -i "s|'memcache_store.prefix' => null|'memcache_store.prefix' => $CONFIG_MEMCACHESTOREPREFIX|g" /var/simplesamlphp/config/config.php
   fi
 fi
