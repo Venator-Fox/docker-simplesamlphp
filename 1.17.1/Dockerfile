@@ -11,7 +11,7 @@ RUN tar xzf /tmp/s6-overlay-amd64.tar.gz -C / --exclude="./bin" \
 
 #Install SimpleSAMLphp Requirements
 RUN yum -y install centos-release-scl \
- && yum -y install rh-nginx114 rh-php72 rh-php72-php-fpm rh-php72-php-mbstring rh-php72-php-pdo php-pecl-memcache rh-php72-php-ldap \
+ && yum -y install rh-nginx114 rh-php72 rh-php72-php-fpm rh-php72-php-mbstring rh-php72-php-pdo rh-php72-php-ldap sclo-php72-php-pecl-memcached \
  && sed -i 's/user = apache/user = nginx/' /etc/opt/rh/rh-php72/php-fpm.d/www.conf \
  && sed -i 's/group = apache/group = nginx/' /etc/opt/rh/rh-php72/php-fpm.d/www.conf
 
