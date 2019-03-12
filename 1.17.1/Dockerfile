@@ -1,7 +1,7 @@
 FROM centos:7
 MAINTAINER Adam Zheng adam.w.zheng@icloud.com
 
-ENV S6_RELEASE 1.21.2.1
+ENV S6_RELEASE 1.22.0.0
 ENV SIMPLESAMLPHP_RELEASE 1.17.1
 
 #Add S6 Overlay
