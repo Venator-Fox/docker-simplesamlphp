@@ -11,7 +11,7 @@ RUN tar xzf /tmp/s6-overlay-amd64.tar.gz -C / --exclude="./bin" \
 
 #Install SimpleSAMLphp Requirements
 RUN yum -y install centos-release-scl \
- && yum -y install nginx rh-php72 rh-php72-php-fpm rh-php72-php-mbstring rh-php72-php-pdo php-pecl-memcache rh-php72-php-ldap \
+ && yum -y install rh-nginx114 rh-php72 rh-php72-php-fpm rh-php72-php-mbstring rh-php72-php-pdo php-pecl-memcache rh-php72-php-ldap \
  && sed -i 's/user = apache/user = nginx/' /etc/opt/rh/rh-php72/php-fpm.d/www.conf \
  && sed -i 's/group = apache/group = nginx/' /etc/opt/rh/rh-php72/php-fpm.d/www.conf
 
@@ -28,21 +28,21 @@ RUN curl -Lo /var/simplesamlphp.tar.gz https://github.com/simplesamlphp/simplesa
  && touch /var/simplesamlphp/log/breadcrumb
 
 #Redirect NGINX Logs
-RUN ln -sf /dev/stdout /var/log/nginx/access.log \
- && ln -sf /dev/stderr /var/log/nginx/error.log
+RUN ln -sf /dev/stdout /var/opt/rh/rh-nginx114/log/nginx/access.log \
+ && ln -sf /dev/stderr /var/opt/rh/rh-nginx114/log/nginx/error.log
 
 #Add Service NGINX to be Monitored by S6
 RUN mkdir -p /etc/services.d/nginx/ \
  && touch /etc/services.d/nginx/run \
  && echo '#!/usr/bin/execlineb -P' > /etc/services.d/nginx/run \
- && echo 'nginx -g "daemon off;"' >> /etc/services.d/nginx/run
+ && echo '/opt/rh/rh-nginx114/root/usr/sbin/nginx -g "daemon off;"' >> /etc/services.d/nginx/run
 
 #Add Service PHP-FPM to be Monitored by S6
 RUN mkdir -p /etc/services.d/php-fpm/ \
  && touch /etc/services.d/php-fpm/run \
  && echo '#!/usr/bin/execlineb -P' > /etc/services.d/php-fpm/run \
- && echo '/usr/sbin/php-fpm' >> /etc/services.d/php-fpm/run --nodaemonize \
- && sed -i 's|pid = /run/php-fpm/php-fpm.pid|pid = /run/php-fpm.pid|g' /etc/php-fpm.conf
+ && echo '/opt/rh/rh-php72/root/usr/sbin/php-fpm' >> /etc/services.d/php-fpm/run --nodaemonize \
+ && sed -i 's|pid = /run/php-fpm/php-fpm.pid|pid = /run/php-fpm.pid|g' /etc/opt/rh/rh-php72/php-fpm.conf
 
 #Copy the SimpleSAMLphp CLI Install Script into the Container to be executed on startup
 COPY install-simplesamlphp.sh /etc/cont-init.d/
