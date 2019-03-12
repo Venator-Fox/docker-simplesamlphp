@@ -21,14 +21,16 @@ RUN echo -e 'server {\n    listen       80 default_server;\n    listen       [::
  && sed -i '/        listen       \[::\]:80 default_server;/d' /etc/opt/rh/rh-nginx114/nginx/nginx.conf \
  && sed -i '/        server_name  _;/d' /etc/opt/rh/rh-nginx114/nginx/nginx.conf \
  && mkdir -p /var/lib/php/session/ \
- && chown -Rv nginx:nginx /var/lib/php/session/
+ && chown -Rv nginx:nginx /var/lib/php/session/ \
+ && chmod a+t /var/lib/php/session/
 
 #Download SimpleSAMLphp, Archive must remain present for seeding post install.
 RUN curl -Lo /var/simplesamlphp.tar.gz https://github.com/simplesamlphp/simplesamlphp/releases/download/v$SIMPLESAMLPHP_RELEASE/simplesamlphp-$SIMPLESAMLPHP_RELEASE.tar.gz \
  && tar xzf /var/simplesamlphp.tar.gz --directory /var \
  && mv /var/simplesamlphp-* /var/simplesamlphp \
  && touch /var/simplesamlphp/cert/breadcrumb \
- && touch /var/simplesamlphp/log/breadcrumb
+ && touch /var/simplesamlphp/log/breadcrumb \
+ && chown -Rv nginx:nginx /var/simplesamlphp/log/
 
 #Redirect NGINX Logs
 RUN ln -sf /dev/stdout /var/opt/rh/rh-nginx114/log/nginx/access.log \
