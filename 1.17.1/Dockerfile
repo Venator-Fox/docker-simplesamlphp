@@ -1,30 +1,20 @@
 FROM centos:7
 MAINTAINER Adam Zheng adam.w.zheng@icloud.com
 
-ENV S6_RELEASE 1.19.1.1
-ENV SIMPLESAMLPHP_RELEASE 1.14.15
+ENV S6_RELEASE 1.21.2.1
+ENV SIMPLESAMLPHP_RELEASE 1.17.1
 
-#Add S6 Overlay (Build via Docker 1.12)
+#Add S6 Overlay
 ADD https://github.com/just-containers/s6-overlay/releases/download/v$S6_RELEASE/s6-overlay-amd64.tar.gz /tmp/
 RUN tar xzf /tmp/s6-overlay-amd64.tar.gz -C / --exclude="./bin" \
  && tar xzf /tmp/s6-overlay-amd64.tar.gz -C /usr ./bin
 
-#Add S6 Overlay (Build via Docker CE 17)
-#ADD https://github.com/just-containers/s6-overlay/releases/download/v$S6_RELEASE/s6-overlay-amd64.tar.gz /tmp/
-#RUN mv /tmp/bin/* /usr/bin/ \
-# && mv /tmp/etc/* /etc/ \
-# && mv /tmp/init / \
-# && mv /tmp/libexec/ / \
-# && rm -v /tmp/usr/bin/execlineb \
-# && mv /tmp/usr/bin/* /usr/bin/ \
-# && rm -rfv /tmp/*
-
 #Install SimpleSAMLphp Requirements
-RUN yum -y install epel-release
-RUN rpm -Uvh https://centos7.iuscommunity.org/ius-release.rpm
-RUN echo -e '[nginx]\nname=nginx repo\nbaseurl=http://nginx.org/packages/centos/7/$basearch/\ngpgcheck=0\nenabled=1' > /etc/yum.repos.d/nginx.repo
-RUN yum -y install nginx php56u-fpm php56u-fpm-nginx php56u-dom php56u-mbstring php56u-mcrypt php56u-pdo php56u-pecl-memcache php56u-ldap sendmail
-RUN sed -i 's/user = apache/user = nginx/' /etc/php-fpm.d/www.conf \
+RUN yum -y install epel-release \
+ && rpm -Uvh https://centos7.iuscommunity.org/ius-release.rpm \
+ && echo -e '[nginx]\nname=nginx repo\nbaseurl=http://nginx.org/packages/centos/7/$basearch/\ngpgcheck=0\nenabled=1' > /etc/yum.repos.d/nginx.repo \
+ && yum -y install nginx php56u-fpm php56u-fpm-nginx php56u-dom php56u-mbstring php56u-pdo php56u-pecl-memcache php56u-ldap sendmail \
+ && sed -i 's/user = apache/user = nginx/' /etc/php-fpm.d/www.conf \
  && sed -i 's/group = apache/group = nginx/' /etc/php-fpm.d/www.conf
 
 #Configure webserver
@@ -60,6 +50,6 @@ RUN mkdir -p /etc/services.d/php-fpm/ \
 COPY install-simplesamlphp.sh /etc/cont-init.d/
 RUN chmod u+x /etc/cont-init.d/install-simplesamlphp.sh
 
-RUN yum -y update && yum clean all && > /var/log/yum.log
+RUN yum -y update && yum clean all && rm -rf /var/cache/yum && > /var/log/yum.log
 
 ENTRYPOINT ["/init"]
