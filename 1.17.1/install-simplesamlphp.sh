@@ -288,8 +288,8 @@ fi
 
 #Only configure redundant memcache if storetype is set to memcache
 if [ "$CONFIG_STORETYPE" == "memcache" ]; then
-  sed -i "/    'memcache_store.servers' => array(/{n;N;N;d}" /var/simplesamlphp/config/config.php 
-  sed -i "s|    'memcache_store.servers' => array(|$CONFIG_MEMCACHESTORESERVERS|g" /var/simplesamlphp/config/config.php
+  sed -i "/    'memcache_store.servers' => \[/{n;N;N;d}" /var/simplesamlphp/config/config.php 
+  sed -i "s|    'memcache_store.servers' => \[|$CONFIG_MEMCACHESTORESERVERS|g" /var/simplesamlphp/config/config.php
   sed -i "s|'memcache_store.prefix' => null|'memcache_store.prefix' => '$CONFIG_MEMCACHESTOREPREFIX'|g" /var/simplesamlphp/config/config.php
   if [ "$CONFIG_MEMCACHESTOREPREFIX" == "null" ]; then
     echo "[$0] [WARN] CONFIG_STORETYPE was set to 'memcache', but CONFIG_MEMCACHESTOREPREFIX was not set from null. This will not work. Setting CONFIG_MEMCACHESTOREPREFIX to 'simpleSAMLphp'."
