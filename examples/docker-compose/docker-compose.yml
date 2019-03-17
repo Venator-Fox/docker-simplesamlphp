@@ -1,0 +1,103 @@
+version: '3.5'
+
+services:
+
+  some-simplesamlphp01:
+    container_name: some-simplesamlphp01
+    image: venatorfox/simplesamlphp:1.17.1
+    environment:
+      - CONFIG_BASEURLPATH=https://localhost/simplesaml/
+# To login to this example setup, use 123 for the password.
+      - CONFIG_AUTHADMINPASSWORD={SSHA256}MjJSiMlkQLa+fqI+CmQ1x1oUJ7OGucYpznKxBBHpgfC+Oh+7B9vgGw==
+      - CONFIG_SECRETSALT=exampleabcdefghijklmnopqrstuvwxy
+      - CONFIG_TECHNICALCONTACT_NAME=Adam W Zheng
+      - CONFIG_TECHNICALCONTACT_EMAIL=adam.w.zheng@icloud.com
+      - CONFIG_LANGUAGEDEFAULT=en
+      - CONFIG_TIMEZONE=America/Chicago
+      - CONFIG_SHOWERRORS=true
+      - CONFIG_ERRORREPORTING=true
+      - CONFIG_ADMINPROTECTINDEXPAGE=true
+      - CONFIG_ADMINPROTECTMETADATA=false
+      - CONFIG_DEBUG=FALSE
+      - CONFIG_LOGGINGLEVEL=INFO
+      - CONFIG_LOGGINGHANDLER=file
+      - CONFIG_LOGFILE=simplesamlphp.log
+      - CONFIG_ENABLESAML20IDP=true
+      - CONFIG_SESSIONCOOKIESECURE=false
+      - CONFIG_ENABLEHTTPPOST=false
+      - CONFIG_STORETYPE=memcache
+      - CONFIG_MEMCACHESTOREPREFIX=simplesamlphp
+      - CONFIG_MEMCACHESTORESERVERS=    'memcache_store.servers' => [\n        [\n             ['hostname' => 'some-memcacheda01'],\n             ['hostname' => 'some-memcacheda02'],\n        ],\n        [\n             ['hostname' => 'some-memcachedb01'],\n             ['hostname' => 'some-memcachedb02'],\n        ],
+#     - WWW_INDEX=core/authenticate.php?as=admin
+      - OPENLDAP_TLS_REQCERT=always
+    volumes:
+#     - /srv/docker/volumes/some-simplesamlphp01/cache/:/var/simplesamlphp/cache/:Z
+#     - /srv/docker/volumes/some-simplesamlphp01/config/authsources.php:/var/simplesamlphp/config/authsources.php:Z
+      - /srv/docker/volumes/some-simplesamlphp01/cert/:/var/simplesamlphp/cert/:Z
+      - /srv/docker/volumes/some-simplesamlphp01/locales/:/var/simplesamlphp/locales/:Z
+      - /srv/docker/volumes/some-simplesamlphp01/log/:/var/simplesamlphp/log/:Z
+      - /srv/docker/volumes/some-simplesamlphp01/metadata/:/var/simplesamlphp/metadata/:Z
+      - /srv/docker/volumes/some-simplesamlphp01/modules/:/var/simplesamlphp/modules/:Z
+      - /srv/docker/volumes/some-simplesamlphp01/templates/:/var/simplesamlphp/templates/:Z
+      - /srv/docker/volumes/some-simplesamlphp01/www/:/var/simplesamlphp/www/:Z
+    restart: always
+    networks:
+      backend:
+        ipv4_address: 172.20.31.10
+
+  some-memcacheda01:
+    container_name: some-memcacheda01
+    image: memcached:latest
+    restart: always
+    networks:
+      backend:
+        ipv4_address: 172.20.31.20
+
+  some-memcacheda02:
+    container_name: some-memcacheda02
+    image: memcached:latest
+    restart: always
+    networks:
+      backend:
+        ipv4_address: 172.20.31.21
+
+  some-memcachedb01:
+    container_name: some-memcachedb01
+    image: memcached:latest
+    restart: always
+    networks:
+      backend:
+        ipv4_address: 172.20.31.30
+
+  some-memcachedb02:
+    container_name: some-memcachedb02
+    image: memcached:latest
+    restart: always
+    networks:
+      backend:
+        ipv4_address: 172.20.31.31
+
+  some-haproxy:
+    container_name: some-haproxy
+    image: million12/haproxy:latest
+    depends_on:
+      - some-simplesamlphp01
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - /srv/docker/volumes/some-haproxy:/etc/haproxy
+    restart: always
+    cap_add:
+      - NET_ADMIN
+    networks:
+      backend:
+        ipv4_address: 172.20.31.40
+
+networks:
+  backend:
+    name: backend
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.31.0/26

@@ -36,6 +36,10 @@ CONFIG_SESSIONDATASTORETIMEOUT=${CONFIG_SESSIONDATASTORETIMEOUT:=(4 * 60 * 60)}
 CONFIG_SESSIONSTATETIMEOUT=${CONFIG_SESSIONSTATETIMEOUT:=(60 * 60)}
 CONFIG_SESSIONCOOKIELIFETIME=${CONFIG_SESSIONCOOKIELIFETIME:=0}
 
+CONFIG_SESSIONPHPSESSIONCOOKIENAME=${CONFIG_SESSIONPHPSESSIONCOOKIENAME:=SimpleSAML}
+CONFIG_SESSIONPHPSESSIONSAVEPATH=${CONFIG_SESSIONPHPSESSIONSAVEPATH:=null}
+CONFIG_SESSIONPHPSESSIONHTTPONLY=${CONFIG_SESSIONPHPSESSIONHTTPONLY:=true}
+
 CONFIG_SESSIONREMEMBERMEENABLE=${CONFIG_SESSIONREMEMBERMEENABLE:=false}
 CONFIG_SESSIONREMEMBERMECHECKED=${CONFIG_SESSIONREMEMBERMECHECKED:=false}
 CONFIG_SESSIONREMEMBERMELIFETIME=${CONFIG_SESSIONREMEMBERMELIFETIME:=(14 * 86400)}
@@ -62,13 +66,14 @@ if [ "$DOCKER_REDIRECTLOGS" = "true" ]; then
       echo "[$0] [WARN] DOCKER_REDIRECTLOGS is set to true but the log directory is volume mounted. It makes no sense to do this as logs are redirected to a pipe."
       echo "[$0] If a simplesamlphp logfile is desired instead of docker logs, set DOCKER_REDIRECTLOGS to 'false'."
       echo "[$0] Pausing 5 seconds due to above warning."
-    sleep 5
+      sleep 5
     fi
   else
     if [ "$CONFIG_LOGGINGHANDLER" = "file" ]; then
       echo "[$0] [WARN] CONFIG_LOGGINGHANDLER is set to 'file'  but the log directory is not volume mounted."
       echo "[$0] [WARN] This will cause the container to grow with a logfile and is in most cases very undesirable."
       echo "[$0] Pausing 5 seconds due to above warning."
+      sleep 5
     fi
   fi
   ln -sf /proc/1/fd/1 /var/simplesamlphp/log/$CONFIG_LOGFILE
@@ -103,8 +108,8 @@ else
   ls -A /var/simplesamlphp/cert/breadcrumb &> /dev/null
   if ! [ $? -ne 0 ]; then
     echo "[$0] [WARN] cert directory is not volume mounted and probably should be."
-    echo "[$0] Pausing 3 seconds due to above warning."
-    sleep 3
+    echo "[$0] Pausing 5 seconds due to above warning."
+    sleep 5
   fi
   if [ -z "$(ls -A /var/simplesamlphp/config/)" ]; then
     echo "[$0] config directory seems to be Docker volume mounted as it is empty. Seeding."
@@ -123,6 +128,9 @@ else
     tar xzvf /var/simplesamlphp.tar.gz simplesamlphp*/dictionaries > /dev/null
     mv /simplesamlphp-1.*/dictionaries/* /var/simplesamlphp/dictionaries/
     echo "[$0] Seed complete. Directory dictionaries will not be part of future upgrades and will need upgraded manually."
+    echo "[$0] [WARN] usage of dictionaries are deprecated in 1.15.0 and will be removed in 2.0. Use locales instead."
+    echo "[$0] Pausing 5 seconds due to above warning."
+    sleep 5
   fi
   if [ -z "$(ls -A /var/simplesamlphp/docs/)" ]; then
     echo "[$0] docs directory seems to be Docker volume mounted as it is empty. Seeding."
@@ -141,6 +149,12 @@ else
     tar xzvf /var/simplesamlphp.tar.gz simplesamlphp*/lib > /dev/null
     mv /simplesamlphp-1.*/lib/* /var/simplesamlphp/lib/
     echo "[$0] Seed complete. Directory lib will not be part of future upgrades and will need upgraded manually."
+  fi
+  if [ -z "$(ls -A /var/simplesamlphp/locales/)" ]; then
+    echo "[$0] locales directory seems to be Docker volume mounted as it is empty. Seeding."
+    tar xzvf /var/simplesamlphp.tar.gz simplesamlphp*/locales > /dev/null
+    mv /simplesamlphp-1.*/locales/* /var/simplesamlphp/locales/
+    echo "[$0] Seed complete. Directory locales will not be part of future upgrades and will need upgraded manually."
   fi
   if [ -z "$(ls -A /var/simplesamlphp/metadata/)" ]; then
     echo "[$0] metadata directory seems to be Docker volume mounted as it is empty. Seeding."
@@ -166,6 +180,12 @@ else
     mv /simplesamlphp-1.*/schemas/* /var/simplesamlphp/schemas/
     echo "[$0] Seed complete. Directory schemas will not be part of future upgrades and will need upgraded manually."
   fi
+  if [ -z "$(ls -A /var/simplesamlphp/src/)" ]; then
+    echo "[$0] src directory seems to be Docker volume mounted as it is empty. Seeding."
+    tar xzvf /var/simplesamlphp.tar.gz simplesamlphp*/src > /dev/null
+    mv /simplesamlphp-1.*/src/* /var/simplesamlphp/src/
+    echo "[$0] Seed complete. Directory src will not be part of future upgrades and will need upgraded manually."
+  fi
   if [ -z "$(ls -A /var/simplesamlphp/templates/)" ]; then
     echo "[$0] templates directory seems to be Docker volume mounted as it is empty. Seeding."
     tar xzvf /var/simplesamlphp.tar.gz simplesamlphp*/templates > /dev/null
@@ -177,12 +197,6 @@ else
     tar xzvf /var/simplesamlphp.tar.gz simplesamlphp*/tests > /dev/null
     mv /simplesamlphp-1.*/tests/* /var/simplesamlphp/tests/
     echo "[$0] Seed complete. Directory tests will not be part of future upgrades and will need upgraded manually."
-  fi
-  if [ -z "$(ls -A /var/simplesamlphp/tools/)" ]; then
-    echo "[$0] tools directory seems to be Docker volume mounted as it is empty. Seeding."
-    tar xzvf /var/simplesamlphp.tar.gz simplesamlphp*/tools > /dev/null
-    mv /simplesamlphp-1.*/tools/* /var/simplesamlphp/tools/
-    echo "[$0] Seed complete. Directory tools will not be part of future upgrades and will need upgraded manually."
   fi
   if [ -z "$(ls -A /var/simplesamlphp/vendor/)" ]; then
     echo "[$0] vendor directory seems to be Docker volume mounted as it is empty. Seeding."
@@ -245,6 +259,10 @@ sed -i "s|'session.datastore.timeout' => (4 \* 60 \* 60)|'session.datastore.time
 sed -i "s|'session.state.timeout' => (60 \* 60)|'session.state.timeout' => $CONFIG_SESSIONSTATETIMEOUT|g" /var/simplesamlphp/config/config.php
 sed -i "s|'session.cookie.lifetime' => 0|'session.cookie.lifetime' => $CONFIG_SESSIONCOOKIELIFETIME|g" /var/simplesamlphp/config/config.php
 
+sed -i "s|'session.phpsession.cookiename' => 'SimpleSAML'|'session.phpsession.cookiename' => '$CONFIG_SESSIONPHPSESSIONCOOKIENAME'|g" /var/simplesamlphp/config/config.php
+sed -i "s|'session.phpsession.savepath' => null|'session.phpsession.savepath' => '$CONFIG_SESSIONPHPSESSIONSAVEPATH'|g" /var/simplesamlphp/config/config.php
+sed -i "s|'session.phpsession.httponly' => true|'session.phpsession.httponly' => $CONFIG_SESSIONPHPSESSIONHTTPONLY|g" /var/simplesamlphp/config/config.php
+
 sed -i "s|'session.rememberme.enable' => false|'session.rememberme.enable' => $CONFIG_SESSIONREMEMBERMEENABLE|g" /var/simplesamlphp/config/config.php
 sed -i "s|'session.rememberme.checked' => false|'session.rememberme.checked' => $CONFIG_SESSIONREMEMBERMECHECKED|g" /var/simplesamlphp/config/config.php
 sed -i "s|'session.rememberme.lifetime' => (14 \* 86400)|'session.rememberme.lifetime' => $CONFIG_SESSIONREMEMBERMELIFETIME|g" /var/simplesamlphp/config/config.php
@@ -258,22 +276,31 @@ sed -i "s|'store.type'                    => 'phpsession',|'store.type'         
 
 sed -i "s|'core/frontpage_welcome.php'|'$WWW_INDEX'|g" /var/simplesamlphp/www/index.php
 
+#Check for valid phpsession configuration
+if [ "$CONFIG_STORETYPE" == "phpsession" ] && [ "$CONFIG_SESSIONPHPSESSIONSAVEPATH" == "null" ]; then
+  echo "[$0] [WARN] CONFIG_STORETYPE was set to 'phpsession', but CONFIG_SESSIONPHPSESSIONSAVEPATH was not set from null. This will not work. Setting CONFIG_SESSIONPHPSESSIONSAVEPATH to '/var/lib/php/session/'."
+  echo "[$0] To avoid this warning in the future, set CONFIG_SESSIONPHPSESSIONSAVEPATH to a valid value, '/var/lib/php/session' is the suggested default if phpsession is used."
+  echo "[$0] Pausing 5 seconds due to above warning."
+  sleep 5
+  CONFIG_SESSIONPHPSESSIONSAVEPATH=/var/lib/php/session/
+  sed -i "s|'session.phpsession.savepath' => 'null'|'session.phpsession.savepath' => '$CONFIG_SESSIONPHPSESSIONSAVEPATH'|g" /var/simplesamlphp/config/config.php
+fi
+
 #Only configure redundant memcache if storetype is set to memcache
 if [ "$CONFIG_STORETYPE" == "memcache" ]; then
-  sed -i "/    'memcache_store.servers' => array(/{n;N;N;d}" /var/simplesamlphp/config/config.php 
-  sed -i "s|    'memcache_store.servers' => array(|$CONFIG_MEMCACHESTORESERVERS|g" /var/simplesamlphp/config/config.php
+  sed -i "/    'memcache_store.servers' => \[/{n;N;N;d}" /var/simplesamlphp/config/config.php 
+  sed -i "s|    'memcache_store.servers' => \[|$CONFIG_MEMCACHESTORESERVERS|g" /var/simplesamlphp/config/config.php
   sed -i "s|'memcache_store.prefix' => null|'memcache_store.prefix' => '$CONFIG_MEMCACHESTOREPREFIX'|g" /var/simplesamlphp/config/config.php
   if [ "$CONFIG_MEMCACHESTOREPREFIX" == "null" ]; then
     echo "[$0] [WARN] CONFIG_STORETYPE was set to 'memcache', but CONFIG_MEMCACHESTOREPREFIX was not set from null. This will not work. Setting CONFIG_MEMCACHESTOREPREFIX to 'simpleSAMLphp'."
     echo "[$0] To avoid this warning in the future, set CONFIG_MEMCACHESTOREPREFIX to something, 'simpleSAMLphp' is the suggested default if memcache is enabled."
     echo "[$0] Pausing 5 seconds due to above warning."
     sleep 5
-    CONFIG_MEMCACHESTOREPREFIX=simplesamlphp
     sed -i "s|'memcache_store.prefix' => null|'memcache_store.prefix' => $CONFIG_MEMCACHESTOREPREFIX|g" /var/simplesamlphp/config/config.php
   fi
 fi
 
-chown php-fpm:php-fpm /var/simplesamlphp/log/
+chown nginx:nginx /var/simplesamlphp/log/
 
 touch /var/simplesamlphp/config/.dockersetupdone
 

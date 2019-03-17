@@ -1,21 +1,27 @@
-[![](https://images.microbadger.com/badges/version/venatorfox/simplesamlphp:1.14.17.svg)](https://microbadger.com/images/venatorfox/simplesamlphp:1.14.17 "Get your own version badge on microbadger.com") [![](https://images.microbadger.com/badges/image/venatorfox/simplesamlphp:1.14.17.svg)](https://microbadger.com/images/venatorfox/simplesamlphp:1.14.17 "Get your own image badge on microbadger.com") [![Pulls on Docker Hub](https://img.shields.io/docker/pulls/venatorfox/simplesamlphp.svg)](https://hub.docker.com/r/venatorfox/simplesamlphp)  [![Stars on Docker Hub](https://img.shields.io/docker/stars/venatorfox/simplesamlphp.svg)](https://hub.docker.com/r/venatorfox/simplesamlphp) [![GitHub Open Issues](https://img.shields.io/github/issues/Venator-Fox/docker-simplesamlphp.svg)](https://github.com/Venator-Fox/docker-simplesamlphp/issues) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![](https://images.microbadger.com/badges/version/venatorfox/simplesamlphp:1.17.1.svg)](https://github.com/Venator-Fox/docker-simplesamlphp/network "View Network") [![](https://images.microbadger.com/badges/image/venatorfox/simplesamlphp:1.17.1.svg)](https://microbadger.com/images/venatorfox/simplesamlphp:1.17.1 "View layer metadata on MicroBadger") [![Pulls on Docker Hub](https://img.shields.io/docker/pulls/venatorfox/simplesamlphp.svg)](https://hub.docker.com/r/venatorfox/simplesamlphp)  [![Stars on Docker Hub](https://img.shields.io/docker/stars/venatorfox/simplesamlphp.svg)](https://hub.docker.com/r/venatorfox/simplesamlphp) [![GitHub Open Issues](https://img.shields.io/github/issues/Venator-Fox/docker-simplesamlphp.svg)](https://github.com/Venator-Fox/docker-simplesamlphp/issues) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 Supported tags and respective `Dockerfile` links
+> ~~Depreciated~~ builds are not recommended, as they utilized php56 which is EOL as of the end of 2018.
 
-- [`1.14.17`, `latest` (*1.14.17/Dockerfile*)](https://github.com/Venator-Fox/docker-simplesamlphp/blob/master/1.14.17/Dockerfile)
-- [`1.14.16` (*1.14.16/Dockerfile*)](https://github.com/Venator-Fox/docker-simplesamlphp/blob/master/1.14.16/Dockerfile)
-- [`1.14.15` (*1.14.15/Dockerfile*)](https://github.com/Venator-Fox/docker-simplesamlphp/blob/master/1.14.15/Dockerfile)
+- [`1.17.1`, `latest` (*1.17.1/Dockerfile*)](https://github.com/Venator-Fox/docker-simplesamlphp/blob/master/1.17.1/Dockerfile)
+- ~~[`1.15.0` (*1.15.0/Dockerfile*)](https://github.com/Venator-Fox/docker-simplesamlphp/blob/master/1.15.0/Dockerfile)~~
+- ~~[`1.14.17` (*1.14.17/Dockerfile*)](https://github.com/Venator-Fox/docker-simplesamlphp/blob/master/1.14.17/Dockerfile)~~
+- ~~[`1.14.16` (*1.14.16/Dockerfile*)](https://github.com/Venator-Fox/docker-simplesamlphp/blob/master/1.14.16/Dockerfile)~~
+- ~~[`1.14.15` (*1.14.15/Dockerfile*)](https://github.com/Venator-Fox/docker-simplesamlphp/blob/master/1.14.15/Dockerfile)~~
 
 ### How to use this image
+
+The following 1 liner will get you up and running with a default configuration.
 
 Start a `venatorfox/simplesamlphp` instance, expose port 80.
 
 ```console
 $ docker run --name some-simplesamlphp -p80:80 venatorfox/simplesamlphp:latest
 ```
-Visit the site at http://localhost, default unconfigured username is "admin" and password is "123". #superSecure 
+Visit the site at http://localhost, default unconfigured username is "admin" and password is "123".
 
-See below for available runtime environment variables for a more specific configuration.
+Of course, running with the default configuration and no volumes is not what is desired.  
+The next sections below will show available runtime environment variables for a more specific configuration.
 
 > The config.php will be created at run and baked into the SimpleSAMLphp Core Install.
 > This will allow easy future upgrades, as you can simply destroy the container and bring it up with a new version.
@@ -24,10 +30,13 @@ See below for available runtime environment variables for a more specific config
 > The purpose of this image is to store as much ephemeral data inside the container as possible for easy upgrades.
 > This is controlled by how you mount docker volumes. Examples are presented below.
 
+### More Complex Examples
+Some more complex (ie. with SSL termination, memcache, etc...) setup examples are located in the README.md within the [examples directory].
+
 ### Supported Volume Mount Options for Pre-Seeding
 
-The following directories will pre-seed if they are mounted.
-If attempting to mount an subdirectory, it will not pre-seed and therefore must pre-exist.
+The following directories will pre-seed if they are mounted.  
+Subdirectores will not seed, so data must already exist if volume mounting a subdirectory.
 
 If the directory is not mounted, it will use its ephemeral counterpart in the container which is ideal, explained below.
 Note that once a directory is mounted, it will need to be upgraded manually for future SimpleSAMLphp releases if applicable.
@@ -50,23 +59,26 @@ This will vary greatly depending on use. A compose file similar to a production 
 
 | Directory | Opinion |
 | ------ | ------ |
-| /var/simplesamlphp/attributemap | -- |
+| /var/simplesamlphp/attributemap | Mount if additional mappings are needed. |
 | /var/simplesamlphp/bin | Probably should not be volume mounted. |
+| /var/simplesamlphp/cache | -- |
 | /var/simplesamlphp/cert | Should always be volume mounted. |
-| /var/simplesamlphp/config | Should probably not be volume mounted as its mostly configured by docker. |
+| /var/simplesamlphp/config | Should probably not be volume mounted as it is configured via runtime environment variables. This should stay ephemeral. |
 | /var/simplesamlphp/config-templates | -- |
-| /var/simplesamlphp/dictionaries | Can be mounted for customized user messages. |
+| /var/simplesamlphp/data | -- |
+| /var/simplesamlphp/dictionaries | Depreciated as of 1.15.0. Use locales instead. |
 | /var/simplesamlphp/docs | -- |
 | /var/simplesamlphp/extra | -- |
 | /var/simplesamlphp/lib | -- |
+| /var/simplesamlphp/locales | Mount for customized user messages and translations. |
 | /var/simplesamlphp/log | If using docker log redirection (not working yet), this cannot be volume mounted. If docker logs write to a file, this should be volume mounted so logs do not grow inside the container. |
 | /var/simplesamlphp/metadata | Should always be volume mounted, very specific to organization. |
 | /var/simplesamlphp/metadata-templates | -- |
 | /var/simplesamlphp/modules | Can be volume mounted for easier module customization |
 | /var/simplesamlphp/schemas | -- |
+| /var/simplesamlphp/src | -- |
 | /var/simplesamlphp/templates | -- |
 | /var/simplesamlphp/tests | -- |
-| /var/simplesamlphp/tools | -- |
 | /var/simplesamlphp/vendor | -- |
 | /var/simplesamlphp/www | Can be volume mounted for easier www customization |
 
@@ -101,6 +113,9 @@ It is recommended to set them properly and not use default values.
 | CONFIG_SESSIONDATASTORETIMEOUT | (4 * 60 * 60) | -- |
 | CONFIG_SESSIONSTATETIMEOUT | (60 * 60) | -- |
 | CONFIG_SESSIONCOOKIELIFETIME | 0 | -- |
+| CONFIG_SESSIONPHPSESSIONCOOKIENAME | SimpleSAML | -- |
+| CONFIG_SESSIONPHPSESSIONSAVEPATH | null | This must be set to a valid path if using phpsession, otherwise a redirect loop on login will occur. `/var/lib/php/session/` will be inserted if phpsession is used while this value is still unconfigured. |
+| CONFIG_SESSIONPHPSESSIONHTTPONLY | true | -- |
 | CONFIG_SESSIONREMEMBERMEENABLE | false | -- |
 | CONFIG_SESSIONREMEMBERMECHECKED | false | -- |
 | CONFIG_SESSIONREMEMBERMELIFETIME | (14 * 86400) | -- |
@@ -120,42 +135,10 @@ Default CONFIG_MEMCACHESTORESERVERS format, 2 pair of 2 example. Use this templa
 
 ### Maintenance
 
-This is being actively maintained and is running in production.
+This is being actively maintained and is running in production for several organizations.
 Please [create an issue](https://github.com/Venator-Fox/docker-simplesamlphp/issues) if needed or if additional variables/features are desired.
 
 ### Todos
  - Figure out logging to docker stdio
  - Add support for mail to be sent during exceptions
  - Add ability for stats to be sent to docker stdio or to mounted file
-
-### More Complex/Practical Compose Example, IdP SSL Termination with HAProxy
-This example will run HAProxy with snakeoil SSL termination for https://localhost.
-It will also bring up 4 memcached containers, 2 pairs of 2, for phpsession.
-This is useful for running a SimpleSAMLphp cluster via some orchestration service such as Rancher.
-
-You will need the `haproxy.cfg` and `docker-compose.yml` files from the Git repository.
-
-Since SimpleSAMLphp will not care about the webroot, an entry to the hosts file can be added to whatever for testing. 
-Be sure to adjust the HOST environment variable below for whatever localhost self-signed certificate desired.
-Of course in production use a real CA, like LetsEncrypt.
-
-This will be more in line with what would be seen in a production environment. (minus the demo 123 password, salt, etc)
-Note the choices of volume mounts of what to keep ephemeral, and what to keep persistant.
-The more volumes, the more manual upgrades might be.
-Check SimpleSAMLphp's upgrade notes to see if updates occured in a specified directory.
-
-Note that running this compose file will create files in `/opt/docker/volumes/` on your host.
-You can remove this after toying with the example.
-
-Run the following two commands:
-```console
-mkdir -p /opt/docker/volumes/idp-haproxy/ssl
-docker run --rm -v /opt/docker/volumes/idp-haproxy/ssl:/ssl -e HOST=localhost -e TYPE=pem project42/selfsignedcert
-```
-
-Save the `haproxy.cfg` to `/opt/docker/volumes/idp-haproxy/haproxy.cfg`
-
-Finally, save the v2 compose file as `docker-compose.yml` somewhere.
-Run `docker-compose -f docker-compose.yml up` to bring the stack up.
-After install, visit https://localhost (or whatever URL you chose)
-Use `docker-compose -f docker-compose.yml down` to destroy containers after playing.
