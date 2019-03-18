@@ -30,6 +30,12 @@ services:
       - CONFIG_MEMCACHESTORESERVERS=    'memcache_store.servers' => [\n        [\n             ['hostname' => 'some-memcacheda01'],\n             ['hostname' => 'some-memcacheda02'],\n        ],\n        [\n             ['hostname' => 'some-memcachedb01'],\n             ['hostname' => 'some-memcachedb02'],\n        ],
 #     - WWW_INDEX=core/authenticate.php?as=admin
       - OPENLDAP_TLS_REQCERT=always
+      - MTA_NULLCLIENT=true
+      - POSTFIX_MYHOSTNAME=auth.example.com
+      - POSTFIX_MYORIGIN=$$mydomain
+      - POSTFIX_RELAYHOST=$$mydomain
+      - POSTFIX_INETINTERFACES=loopback-only
+      - POSTFIX_MYDESTINATION=
     volumes:
 #     - /srv/docker/volumes/some-simplesamlphp01/cache/:/var/simplesamlphp/cache/:Z
 #     - /srv/docker/volumes/some-simplesamlphp01/config/authsources.php:/var/simplesamlphp/config/authsources.php:Z
@@ -86,7 +92,7 @@ services:
       - 80:80
       - 443:443
     volumes:
-      - /srv/docker/volumes/some-haproxy:/etc/haproxy
+      - /srv/docker/volumes/some-haproxy:/etc/haproxy/:Z
     restart: always
     cap_add:
       - NET_ADMIN

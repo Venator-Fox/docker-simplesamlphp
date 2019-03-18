@@ -52,6 +52,13 @@ CONFIG_STORETYPE=${CONFIG_STORETYPE:=phpsession}
 WWW_INDEX=${WWW_INDEX:=core/frontpage_welcome.php}
 OPENLDAP_TLS_REQCERT=${OPENLDAP_TLS_REQCERT:=demand}
 
+MTA_NULLCLIENT=${MTA_NULLCLIENT:=false}
+POSTFIX_MYHOSTNAME=${POSTFIX_MYHOSTNAME:=host.domain.tld}
+POSTFIX_MYORIGIN=${POSTFIX_MYORIGIN:='$myhostname'}
+POSTFIX_RELAYHOST=${POSTFIX_RELAYHOST:='$mydomain'}
+POSTFIX_INETINTERFACES=${POSTFIX_INETINTERFACES:='localhost'}
+POSTFIX_MYDESTINATION=${POSTFIX_MYDESTINATION:=}
+
 if [ "$DOCKER_REDIRECTLOGS" = "true" ]; then
   echo "[$0] DOCKER_REDIRECTLOGS was set to 'true', so setting CONFIG_LOGGINGHANDLER to 'file'"
   CONFIG_LOGGINGHANDLER=file
@@ -275,6 +282,32 @@ sed -i "s|'theme.use' => 'default'|'theme.use' => '$CONFIG_THEMEUSE'|g" /var/sim
 sed -i "s|'store.type'                    => 'phpsession',|'store.type'                    => '$CONFIG_STORETYPE',|g" /var/simplesamlphp/config/config.php
 
 sed -i "s|'core/frontpage_welcome.php'|'$WWW_INDEX'|g" /var/simplesamlphp/www/index.php
+
+#Only configure null cient for mail if MTA_NULLCLIENT is true, else remove postfix
+if [ "$MTA_NULLCLIENT" == "true" ]; then
+  echo "[$0] MTA_NULLCLIENT was set to true, configuring postfix..."
+  sed -i "s|#myhostname = host.domain.tld|myhostname = $POSTFIX_MYHOSTNAME|g" /etc/postfix/main.cf
+  sed -i "s|#myorigin = \$myhostname|myorigin = $POSTFIX_MYORIGIN|g" /etc/postfix/main.cf
+  sed -i "s|#relayhost = \$mydomain|relayhost = $POSTFIX_RELAYHOST|g" /etc/postfix/main.cf
+  sed -i "s|inet_interfaces = localhost|inet_interfaces = $POSTFIX_INETINTERFACES|g" /etc/postfix/main.cf
+  sed -i "s|mydestination = \$myhostname, localhost.\$mydomain, localhost|mydestination =  $POSTFIX_MYDESTINATION|1" /etc/postfix/main.cf
+  if [ "$POSTFIX_MYDESTINATION" != "" ] ; then
+    echo "[$0] [WARN] Only null client is supported in this image. POSTFIX_MYDESTINATION must be set to an empty string but was set to '$POSTFIX_MYDESTINATION'."
+    echo "[$0] To avoid this warning in the future, set POSTFIX_MYDESTINATION to an empty string."
+    echo "[$0] Pausing 5 seconds due to above warning."
+    sleep 5
+  fi
+  echo "[$0] Configured null client."
+elif [ "$MTA_NULLCLIENT" == "false" ]; then
+  echo "[$0] MTA_NULLCLIENT was set to false, removing postfix and mariadb-libs"
+  yum remove -y postfix mariadb-libs > /dev/null
+  rm -rf /etc/services.d/postfix/
+else
+  echo "[$0] [WARN] Unsupported value for MTA_NULLCLIENT. Expecting 'true' or 'false', but was set to '$MTA_NULLCLIENT'.
+  echo "[$0] To avoid this warning in the future, set MTA_NULLCLIENT to a valid value. Doing nothing.
+  echo "[$0] Pausing 5 seconds due to above warning."
+  sleep 5
+fi
 
 #Check for valid phpsession configuration
 if [ "$CONFIG_STORETYPE" == "phpsession" ] && [ "$CONFIG_SESSIONPHPSESSIONSAVEPATH" == "null" ]; then
