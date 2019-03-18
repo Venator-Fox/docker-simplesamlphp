@@ -11,7 +11,7 @@ RUN tar xzf /tmp/s6-overlay-amd64.tar.gz -C / --exclude="./bin" \
 
 #Install SimpleSAMLphp Requirements
 RUN yum -y install centos-release-scl \
- && yum -y install rh-nginx114 rh-php72 rh-php72-php-fpm rh-php72-php-mbstring rh-php72-php-pdo rh-php72-php-ldap sclo-php72-php-pecl-memcached \
+ && yum -y install rh-nginx114 rh-php72 rh-php72-php-fpm rh-php72-php-mbstring rh-php72-php-pdo rh-php72-php-ldap sclo-php72-php-pecl-memcached postfix \
  && sed -i 's/user = apache/user = nginx/' /etc/opt/rh/rh-php72/php-fpm.d/www.conf \
  && sed -i 's/group = apache/group = nginx/' /etc/opt/rh/rh-php72/php-fpm.d/www.conf
 
@@ -47,6 +47,12 @@ RUN mkdir -p /etc/services.d/php-fpm/ \
  && echo '#!/usr/bin/execlineb -P' > /etc/services.d/php-fpm/run \
  && echo '/opt/rh/rh-php72/root/usr/sbin/php-fpm' >> /etc/services.d/php-fpm/run --nodaemonize \
  && sed -i 's|pid = /run/php-fpm/php-fpm.pid|pid = /run/php-fpm.pid|g' /etc/opt/rh/rh-php72/php-fpm.conf
+
+#Add Service Postfix to be Monitored by S6
+RUN mkdir -p /etc/services.d/postfix/ \
+ && touch /etc/services.d/postfix/run \
+ && echo '#!/usr/bin/execlineb -P' > /etc/services.d/postfix/run \
+ && echo '/usr/sbin/postfix start' >> /etc/services.d/postfix/run
 
 #Copy the SimpleSAMLphp CLI Install Script into the Container to be executed on startup
 COPY install-simplesamlphp.sh /etc/cont-init.d/

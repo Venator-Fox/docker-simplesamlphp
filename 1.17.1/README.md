@@ -31,7 +31,7 @@ The next sections below will show available runtime environment variables for a 
 > This is controlled by how you mount docker volumes. Examples are presented below.
 
 ### More Complex Examples
-Some more complex (ie. with SSL termination, memcache, etc...) setup examples are located in the README.md within the [examples directory].
+Some more complex (ie. with SSL termination, memcache, null client, etc...) setup examples are located in the README.md within the [examples directory](https://github.com/Venator-Fox/docker-simplesamlphp/tree/master/examples).
 
 ### Supported Volume Mount Options for Pre-Seeding
 
@@ -127,11 +127,19 @@ It is recommended to set them properly and not use default values.
 | CONFIG_MEMCACHESTOREPREFIX | null | `simplesamlphp` can be used in most cases. |
 | WWW_INDEX | core/frontpage_welcome.php | Page to direct to if a user accesses the IdP/SP directly. Can be set to an authentication test for example. |
 | OPENLDAP_TLS_REQCERT | demand | As per ldap man pages, Options are `never` `allow` `try` `demand`. If using Active Directory or OpenLDAP with TLS, logins will be rejected if the directory certificate is self-signed with the default `demand` value. This can be set to `never` for testing purposes. Refer to ldap.conf man page section 5 for more details. |
+| MTA_NULLCLIENT | false | Set to true to configure null client for sending e-mails.  Visit the [Postfix Standard Configuration Examples](http://www.postfix.org/STANDARD_CONFIGURATION_README.html) for explaination of a null client. If this is set to false, postfix will be purged from the container. |
+| POSTFIX_MYHOSTNAME| host.domain.tld | Set to the FQDN of your host. ie `auth.example.com` |
+| POSTFIX_MYORIGIN | $myhostname | Set to `$mydomain` as per postfix docs for null client |
+| POSTFIX_RELAYHOST | $mydomain | Set to `$mydomain` again as per postfix docs for null client |
+| POSTFIX_INETINTERFACES | localhost | Set to loopback-only as per postfix docs for null client |
+| POSTFIX_MYDESTINATION | | Leave as empty string as per postfix docs for null client |
 
 Default CONFIG_MEMCACHESTORESERVERS format, 2 pair of 2 example. Use this template and replace the hostnames. Check compose file for usage example:
 ```console
     'memcache_store.servers' => array(\n        array(\n             array('hostname' => 'mc_a1'),\n             array('hostname' => 'mc_a2'),\n        ),\n        array(\n             array('hostname' => 'mc_b1'),\n             array('hostname' => 'mc_b2'),\n        ),
 ```
+
+> For the POSTFIX_ environment variables, the $ character will need to be escaped with another $. ie. enter `$$mydomain`.
 
 ### Maintenance
 
@@ -140,5 +148,3 @@ Please [create an issue](https://github.com/Venator-Fox/docker-simplesamlphp/iss
 
 ### Todos
  - Figure out logging to docker stdio
- - Add support for mail to be sent during exceptions
- - Add ability for stats to be sent to docker stdio or to mounted file
