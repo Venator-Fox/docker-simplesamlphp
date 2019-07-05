@@ -1,7 +1,7 @@
 FROM centos:7
 LABEL maintainer="Adam W Zheng <adam.w.zheng@icloud.com>"
 
-ENV S6_RELEASE 1.22.0.0
+ENV S6_RELEASE 1.22.1.0
 ENV SIMPLESAMLPHP_RELEASE 1.17.2
 
 #Add S6 Overlay
