@@ -72,7 +72,7 @@ This will vary greatly depending on use. A compose file similar to a production 
 | /var/simplesamlphp/extra | -- |
 | /var/simplesamlphp/lib | -- |
 | /var/simplesamlphp/locales | Mount for customized user messages and translations. |
-| /var/simplesamlphp/log | If using docker log redirection (not working yet), this cannot be volume mounted. If docker logs write to a file, this should be volume mounted so logs do not grow inside the container. |
+| /var/simplesamlphp/log | If using docker log redirection, this cannot be volume mounted. If docker logs write to a file, this should be volume mounted so logs do not grow inside the container. |
 | /var/simplesamlphp/metadata | Should always be volume mounted, very specific to organization. |
 | /var/simplesamlphp/metadata-templates | -- |
 | /var/simplesamlphp/modules | Can be volume mounted for easier module customization |
@@ -92,7 +92,7 @@ It is recommended to set them properly and not use default values.
 | Variable | Default Value | Description |
 | ------ | ------ | ------ |
 | CONFIG_BASEURLPATH | simplesaml/ | If using SSL behind a proxy enter the base URL here, otherwise IdP metadata will use http://. Format is [(https)://(hostname)[:port]]/[path/to/simplesaml/]. |
-| DOCKER_REDIRECTLOGS | false | Redirect logs written to the log file by SimpleSAMLphp to `/proc/1/fd/1`. This does not work yet due to permissions issues. If someone knows how to resolve this please let me know or contribute a fix to the Git repository. Thanks! |
+| DOCKER_REDIRECTLOGS | false | Redirect logs written to the log file by SimpleSAMLphp to `/dev/console`. Please run with -t as a TTY will need allocated for this to work. |
 | CONFIG_AUTHADMINPASSWORD | SSHA256 hash of '123' | Plain text works as well. Use PWGen to generate a hash for this variable. Refer to [SimpleSAMLphp docs](https://simplesamlphp.org/docs/stable/simplesamlphp-install), installation guide section 7. |
 | CONFIG_SECRETSALT | defaultsecretsalt | Refer to [SimpleSAMLphp docs](https://simplesamlphp.org/docs/stable/simplesamlphp-install), installation guide section 7 if help is needed for generating one. |
 | CONFIG_TECHNICALCONTACT_NAME | Administrator | Name of the Admin of Rainy Clouds, 42nd of Their Name, Breaker of Sanity, and ~~Destroyer~~ Protector of the Federation |
@@ -146,6 +146,3 @@ Default CONFIG_MEMCACHESTORESERVERS format, 2 pair of 2 example. Use this templa
 
 This is being actively maintained and is running in production for several organizations.
 Please [create an issue](https://github.com/Venator-Fox/docker-simplesamlphp/issues) if needed or if additional variables/features are desired.
-
-### Todos
- - Figure out logging to docker stdio

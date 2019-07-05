@@ -62,6 +62,7 @@ POSTFIX_MYDESTINATION=${POSTFIX_MYDESTINATION:=}
 if [ "$DOCKER_REDIRECTLOGS" = "true" ]; then
   echo "[$0] DOCKER_REDIRECTLOGS was set to 'true', so setting CONFIG_LOGGINGHANDLER to 'file'"
   CONFIG_LOGGINGHANDLER=file
+
   if [ "$CONFIG_LOGFILE" != "simplesamlphp.log" ]; then
     echo "[$0] [WARN] DOCKER_REDIRECTLOGS was set to true, but CONFIG_LOGFILE was set away from the default. It makes no sense to do this as logs are redirected to a pipe."
     echo "[$0] If a simplesamlphp logfile is desired instead of docker logs, set DOCKER_REDIRECTLOGS to 'false' and volume mount the logs directory to the host."
@@ -75,15 +76,26 @@ if [ "$DOCKER_REDIRECTLOGS" = "true" ]; then
       echo "[$0] Pausing 5 seconds due to above warning."
       sleep 5
     fi
-  else
-    if [ "$CONFIG_LOGGINGHANDLER" = "file" ]; then
-      echo "[$0] [WARN] CONFIG_LOGGINGHANDLER is set to 'file'  but the log directory is not volume mounted."
-      echo "[$0] [WARN] This will cause the container to grow with a logfile and is in most cases very undesirable."
-      echo "[$0] Pausing 5 seconds due to above warning."
-      sleep 5
-    fi
   fi
-  ln -sf /proc/1/fd/1 /var/simplesamlphp/log/$CONFIG_LOGFILE
+
+  echo "[$0] Check for TTY"
+  if [ ! -e /dev/console ]; then
+    echo "[$0] [WARN] DOCKER_REDIRECTLOGS is set to true but no TTY is available for console."
+    echo "[$0] SimpleSAMLphp logs will NOT redirect. Destroy and re-run with -t to allocate a TTY."
+    echo "[$0] Pausing 5 seconds due to above warning."
+    sleep 5
+  else
+    echo "[$0] Creating symlink $CONFIG_LOGFILE targeting /dev/console to redirect logs"
+    ln -sf /dev/console /var/simplesamlphp/log/$CONFIG_LOGFILE
+    chown nginx:nginx /var/simplesamlphp/log/$CONFIG_LOGFILE
+  fi
+fi
+
+if [ "$CONFIG_LOGGINGHANDLER" = "file" ] && [ ! -z "$(ls -A /var/simplesamlphp/log/)" ] && [ ! -L /var/simplesamlphp/log/$CONFIG_LOGFILE ]; then
+  echo "[$0] [WARN] CONFIG_LOGGINGHANDLER is set to 'file'  but the log directory is not volume mounted."
+  echo "[$0] [WARN] This will cause the container to grow with a logfile and is in most cases very undesirable."
+  echo "[$0] Pausing 5 seconds due to above warning."
+  sleep 5
 fi
 
 #Only set memcache vars if storetype is memcache
