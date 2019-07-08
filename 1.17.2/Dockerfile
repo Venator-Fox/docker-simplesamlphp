@@ -52,7 +52,7 @@ RUN mkdir -p /etc/services.d/php-fpm/ \
 RUN mkdir -p /etc/services.d/postfix/ \
  && touch /etc/services.d/postfix/run \
  && echo '#!/usr/bin/execlineb -P' > /etc/services.d/postfix/run \
- && echo '/usr/sbin/postfix start' >> /etc/services.d/postfix/run
+ && echo '/usr/libexec/postfix/master -c /etc/postfix -d' >> /etc/services.d/postfix/run
 
 #Copy the simplesamlphp install script into the container to be executed on startup
 COPY install-simplesamlphp.sh /etc/cont-init.d/
