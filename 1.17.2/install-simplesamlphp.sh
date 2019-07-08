@@ -302,6 +302,7 @@ if [ "$MTA_NULLCLIENT" == "true" ]; then
   sed -i "s|#myorigin = \$myhostname|myorigin = $POSTFIX_MYORIGIN|g" /etc/postfix/main.cf
   sed -i "s|#relayhost = \$mydomain|relayhost = $POSTFIX_RELAYHOST|g" /etc/postfix/main.cf
   sed -i "s|inet_interfaces = localhost|inet_interfaces = $POSTFIX_INETINTERFACES|g" /etc/postfix/main.cf
+  sed -i "s|inet_protocols = all|inet_protocols = ipv4|g" /etc/postfix/main.cf
   sed -i "s|mydestination = \$myhostname, localhost.\$mydomain, localhost|mydestination =  $POSTFIX_MYDESTINATION|1" /etc/postfix/main.cf
   if [ "$POSTFIX_MYDESTINATION" != "" ] ; then
     echo "[$0] [WARN] Only null client is supported in this image. POSTFIX_MYDESTINATION must be set to an empty string but was set to '$POSTFIX_MYDESTINATION'."
