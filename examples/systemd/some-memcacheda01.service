@@ -1,0 +1,18 @@
+[Unit]
+Description=Memcached Container A01 (some-memcacheda01)
+Requires=docker.service
+After=docker.service
+
+[Service]
+Restart=on-failure
+RestartSec=5
+ExecStartPre=-/usr/bin/docker stop %N
+ExecStartPre=-/usr/bin/docker rm %N
+ExecStartPre=/usr/bin/docker pull memcached:latest
+ExecStart=/usr/bin/docker run --rm --name %N \
+                              --network simplesamlphp-network \
+                              memcached:latest
+ExecStop=/usr/bin/docker stop %N
+
+[Install]
+WantedBy=multi-user.target
