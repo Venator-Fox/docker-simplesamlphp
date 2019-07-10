@@ -92,19 +92,18 @@ It is recommended to set them properly and not use default values.
 | Variable | Default Value | Description |
 | ------ | ------ | ------ |
 | CONFIG_BASEURLPATH | simplesaml/ | If using SSL behind a proxy enter the base URL here, otherwise IdP metadata will use http://. Format is [(https)://(hostname)[:port]]/[path/to/simplesaml/]. |
-| DOCKER_REDIRECTLOGS | false | Redirect logs written to the log file by SimpleSAMLphp to `/dev/console`. Please run with -t as a TTY will need allocated for this to work. |
 | CONFIG_AUTHADMINPASSWORD | SSHA256 hash of '123' | Plain text works as well. Use PWGen to generate a hash for this variable. Refer to [SimpleSAMLphp docs](https://simplesamlphp.org/docs/stable/simplesamlphp-install), installation guide section 7. |
 | CONFIG_SECRETSALT | defaultsecretsalt | Refer to [SimpleSAMLphp docs](https://simplesamlphp.org/docs/stable/simplesamlphp-install), installation guide section 7 if help is needed for generating one. |
 | CONFIG_TECHNICALCONTACT_NAME | Administrator | Name of the Admin of Rainy Clouds, 42nd of Their Name, Breaker of Sanity, and ~~Destroyer~~ Protector of the Federation |
-| CONFIG_TECHNICALCONTACT_EMAIL | na@example.org | Address of hate mail and applicaton exception logs to send to. Mail support is not yet supported in this container, it is coming soon. Best to turn off mail error reporting option and direct users to the proper email until its implemented. |
+| CONFIG_TECHNICALCONTACT_EMAIL | na@example.org | Address of hate mail and applicaton exception logs to send to. |
 | CONFIG_LANGUAGEDEFAULT | en | -- |
 | CONFIG_TIMEZONE | America/Chicago | Visit the [php.net man pages](http://php.net/manual/en/timezones.america.php) for the options, the one linked is for 'Murica. |
 | CONFIG_TEMPDIR | /tmp/simplesaml | -- |
 | CONFIG_SHOWERRORS | true | Shows detailed errors to the user if one occurs. |
-| CONFIG_ERRORREPORTING | true | Allow users to send reports from SimpleSAMLphp to the technicalcontact. Not yet working. |
-| CONFIG_ADMINPROTECTINDEXPAGE | false | Require admin password to access frontpage_federation index |
-| CONFIG_ADMINPROTECTMETADATA | false | Require admin password to access public IdP metadata |
-| CONFIG_DEBUG | false | Enable debugging to logs, requires CONFIG_LOGGINGLEVEL be set to DEBUG |
+| CONFIG_ERRORREPORTING | true | Allow users to send reports from SimpleSAMLphp to the technicalcontact. |
+| CONFIG_ADMINPROTECTINDEXPAGE | false | Require admin password to access frontpage_federation index. |
+| CONFIG_ADMINPROTECTMETADATA | false | Require admin password to access public IdP metadata. |
+| CONFIG_DEBUG | false | Enable debugging to logs, requires CONFIG_LOGGINGLEVEL be set to DEBUG. |
 | CONFIG_LOGGINGLEVEL | NOTICE | Options are ERR, WARNING, NOTICE, INFO, DEBUG |
 | CONFIG_LOGGINGHANDLER | file | Default different from official default of syslog due to systemd not running in containers. |
 | CONFIG_LOGFILE | simplesamlphp.log | -- |
@@ -129,11 +128,12 @@ It is recommended to set them properly and not use default values.
 | WWW_INDEX | core/frontpage_welcome.php | Page to direct to if a user accesses the IdP/SP directly. Can be set to an authentication test for example. |
 | OPENLDAP_TLS_REQCERT | demand | As per ldap man pages, Options are `never` `allow` `try` `demand`. If using Active Directory or OpenLDAP with TLS, logins will be rejected if the directory certificate is self-signed with the default `demand` value. This can be set to `never` for testing purposes. Refer to ldap.conf man page section 5 for more details. |
 | MTA_NULLCLIENT | false | Set to true to configure null client for sending e-mails.  Visit the [Postfix Standard Configuration Examples](http://www.postfix.org/STANDARD_CONFIGURATION_README.html) for explaination of a null client. If this is set to false, postfix will be purged from the container. |
-| POSTFIX_MYHOSTNAME| host.domain.tld | Set to the FQDN of your host. ie `auth.example.com` |
-| POSTFIX_MYORIGIN | $myhostname | Set to `$mydomain` as per postfix docs for null client |
-| POSTFIX_RELAYHOST | $mydomain | Set to `$mydomain` again as per postfix docs for null client |
-| POSTFIX_INETINTERFACES | localhost | Set to loopback-only as per postfix docs for null client |
-| POSTFIX_MYDESTINATION | | Leave as empty string as per postfix docs for null client |
+| POSTFIX_MYHOSTNAME| host.domain.tld | Set to the FQDN of your host. ie `auth.example.com`. |
+| POSTFIX_MYORIGIN | $myhostname | Set to `$mydomain` as per postfix docs for null client. |
+| POSTFIX_RELAYHOST | $mydomain | Set to `$mydomain` again as per postfix docs for null client. |
+| POSTFIX_INETINTERFACES | localhost | Set to loopback-only as per postfix docs for null client. |
+| POSTFIX_MYDESTINATION | | Leave as empty string as per postfix docs for null client. |
+| DOCKER_REDIRECTLOGS | false | Redirect logs written to the log file by SimpleSAMLphp to `/dev/console`. Please run with -t as a TTY will need allocated for this to work. |
 
 Default CONFIG_MEMCACHESTORESERVERS format, 2 pair of 2 example. Use this template and replace the hostnames. Check compose file for usage example:
 ```console
