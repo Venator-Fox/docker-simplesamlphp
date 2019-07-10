@@ -1,0 +1,46 @@
+[Unit]
+Description=Some SimpleSAMLphp Container (some-simplesamlphp.service)
+Requires=docker.service some-memcacheda01.service some-memcacheda02.service some-memcachedb01.service some-memcachedb02.service
+After=docker.service
+
+[Service]
+TimeoutStartSec=0
+Restart=always
+ExecStartPre=-/usr/bin/docker stop %N
+ExecStartPre=-/usr/bin/docker rm %N
+ExecStartPre=/usr/bin/docker pull venatorfox/simplesamlphp:1.17.2
+ExecStart=/usr/bin/docker run -t --rm --name %N \
+                                 --network simplesamlphp-network \
+                                 --env CONFIG_BASEURLPATH=https://auth.example.com/simplesaml/ \
+                                 --env CONFIG_AUTHADMINPASSWORD={SSHA256}MjJSiMlkQLa+fqI+CmQ1x1oUJ7OGucYpznKxBBHpgfC+Oh+7B9vgGw== \
+                                 --env CONFIG_SECRETSALT=exampleabcdefghijklmnopqrstuvwxy \
+                                 --env CONFIG_TECHNICALCONTACT_NAME=Adam\x20W\x20Zheng \
+                                 --env CONFIG_TECHNICALCONTACT_EMAIL=adam.w.zheng@icloud.com \
+                                 --env CONFIG_SHOWERRORS=true \
+                                 --env CONFIG_ERRORREPORTING=true \
+                                 --env CONFIG_ADMINPROTECTINDEXPAGE=true \
+                                 --env CONFIG_LOGGINGLEVEL=INFO \
+                                 --env CONFIG_ENABLESAML20IDP=true \
+                                 --env CONFIG_STORETYPE=memcache \
+                                 --env CONFIG_MEMCACHESTOREPREFIX=simplesamlphp \
+                                 --env CONFIG_MEMCACHESTORESERVERS=\x20\x20\x20\x20\x27memcache_store.servers\x27\x20\x3d\x3e\x20\x5b\x5cn\x20\x20\x20\x20\x20\x20\x20\x20\x5b\x5cn\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x5b\x27hostname\x27\x20\x3d\x3e\x20\x27some\x2dmemcacheda01\x27\x5d\x2c\x5cn\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x5b\x27hostname\x27\x20\x3d\x3e\x20\x27some\x2dmemcacheda02\x27\x5d\x2c\x5cn\x20\x20\x20\x20\x20\x20\x20\x20\x5d\x2c\x5cn\x20\x20\x20\x20\x20\x20\x20\x20\x5b\x5cn\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x5b\x27hostname\x27\x20\x3d\x3e\x20\x27some\x2dmemcachedb01\x27\x5d\x2c\x5cn\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x5b\x27hostname\x27\x20\x3d\x3e\x20\x27some\x2dmemcachedb02\x27\x5d\x2c\x5cn\x20\x20\x20\x20\x20\x20\x20\x20\x5d\x2c \
+                                 --env OPENLDAP_TLS_REQCERT=allow \
+                                 --env MTA_NULLCLIENT=true \
+                                 --env POSTFIX_MYHOSTNAME=auth.example.com \
+                                 --env POSTFIX_MYORIGIN=$mydomain \
+                                 --env POSTFIX_INETINTERFACES=loopback-only \
+                                 --env DOCKER_REDIRECTLOGS=true \
+                                 --volume /srv/docker/volumes/%N/cache/:/var/simplesamlphp/cache/:Z \
+                                 --volume /srv/docker/volumes/%N/config/:/var/simplesamlphp/config/:Z \
+                                 --volume /srv/docker/volumes/%N/cert/:/var/simplesamlphp/cert/:Z \
+                                 --volume /srv/docker/volumes/%N/locales/:/var/simplesamlphp/locales/:Z \
+                                 --volume /srv/docker/volumes/%N/log/:/var/simplesamlphp/log/:Z \
+                                 --volume /srv/docker/volumes/%N/metadata/:/var/simplesamlphp/metadata/:Z \
+                                 --volume /srv/docker/volumes/%N/modules/:/var/simplesamlphp/modules/:Z \
+                                 --volume /srv/docker/volumes/%N/templates/:/var/simplesamlphp/templates/:Z \
+                                 --volume /srv/docker/volumes/%N/www/:/var/simplesamlphp/www/:Z \
+                                 venatorfox/simplesamlphp:1.17.2
+ExecStop=/usr/bin/docker stop %N
+
+[Install]
+WantedBy=multi-user.target

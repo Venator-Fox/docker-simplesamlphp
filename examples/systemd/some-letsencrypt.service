@@ -1,0 +1,28 @@
+[Unit]
+Description=Some LetsEncrypt Container (some-letsencrypt)
+Requires=docker.service
+After=docker.service
+Conflicts=some-haproxy.service
+
+[Service]
+Restart=never
+ExecStartPre=-/usr/bin/docker stop %N
+ExecStartPre=-/usr/bin/docker rm %N
+ExecStartPre=/usr/bin/docker pull linuxserver/letsencrypt:latest
+ExecStart=/usr/bin/docker run --rm --name %N \
+                              --cap-add=NET_ADMIN \
+                              --publish 80:80 \
+                              --publish 443:443 \
+                              --env PGID=1000 \
+                              --env PUID=1000 \
+                              --env EMAIL=adam.w.zheng@icloud.com \
+                              --env URL=auth.example.com \
+                              --env SUBDOMAINS= \
+                              --env VALIDATION=http \
+                              --env TZ=America/Chicago \
+                              --volume /srv/docker/volumes/%N/config/:/config/:Z \
+                              linuxserver/letsencrypt:latest
+ExecStop=/usr/bin/docker stop %N
+
+[Install]
+WantedBy=multi-user.target
