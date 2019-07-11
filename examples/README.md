@@ -1,4 +1,4 @@
-[![](https://images.microbadger.com/badges/version/venatorfox/simplesamlphp:1.17.2.svg)](https://github.com/Venator-Fox/docker-simplesamlphp/network "View Network") [![](https://images.microbadger.com/badges/image/venatorfox/simplesamlphp:1.17.1.svg)](https://microbadger.com/images/venatorfox/simplesamlphp:1.17.1 "View layer metadata on MicroBadger") [![Pulls on Docker Hub](https://img.shields.io/docker/pulls/venatorfox/simplesamlphp.svg)](https://hub.docker.com/r/venatorfox/simplesamlphp)  [![Stars on Docker Hub](https://img.shields.io/docker/stars/venatorfox/simplesamlphp.svg)](https://hub.docker.com/r/venatorfox/simplesamlphp) [![GitHub Open Issues](https://img.shields.io/github/issues/Venator-Fox/docker-simplesamlphp.svg)](https://github.com/Venator-Fox/docker-simplesamlphp/issues) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![](https://images.microbadger.com/badges/version/venatorfox/simplesamlphp:1.17.3.svg)](https://github.com/Venator-Fox/docker-simplesamlphp/network "View Network") [![](https://images.microbadger.com/badges/image/venatorfox/simplesamlphp:1.17.3.svg)](https://microbadger.com/images/venatorfox/simplesamlphp:1.17.3 "View layer metadata on MicroBadger") [![Pulls on Docker Hub](https://img.shields.io/docker/pulls/venatorfox/simplesamlphp.svg)](https://hub.docker.com/r/venatorfox/simplesamlphp)  [![Stars on Docker Hub](https://img.shields.io/docker/stars/venatorfox/simplesamlphp.svg)](https://hub.docker.com/r/venatorfox/simplesamlphp) [![GitHub Open Issues](https://img.shields.io/github/issues/Venator-Fox/docker-simplesamlphp.svg)](https://github.com/Venator-Fox/docker-simplesamlphp/issues) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ### Examples
 
@@ -6,7 +6,7 @@ This directory contains some example files in order to run the [venatorfox/simpl
 
 The following examples are provided here:  
 - Super basic with all the default options (basically just to look at the application)  
-- HAProxy SSL Termination, Let's Encrypt CA, and common configurations via docker-compose (for development)  
+- HAProxy SSL Termination, Self Signed SSL, and common configurations via docker-compose (for development)  
 - HAProxy SSL Termination, Let's Encrypt CA, and common configurations via systemd (for production)
 
 #### Super basic with all the default options  
