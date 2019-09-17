@@ -8,7 +8,7 @@ networks:
 services:
   some-simplesamlphp:
     container_name: some-simplesamlphp
-    image: venatorfox/simplesamlphp:1.17.4
+    image: venatorfox/simplesamlphp:1.17.6
     environment:
       - CONFIG_BASEURLPATH=https://auth.example.com/simplesaml/
       - CONFIG_AUTHADMINPASSWORD={SSHA256}MjJSiMlkQLa+fqI+CmQ1x1oUJ7OGucYpznKxBBHpgfC+Oh+7B9vgGw==
