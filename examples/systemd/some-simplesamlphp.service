@@ -8,7 +8,7 @@ TimeoutStartSec=0
 Restart=always
 ExecStartPre=-/usr/bin/docker stop %N
 ExecStartPre=-/usr/bin/docker rm %N
-ExecStartPre=/usr/bin/docker pull venatorfox/simplesamlphp:1.17.6
+ExecStartPre=/usr/bin/docker pull venatorfox/simplesamlphp:latest
 ExecStart=/usr/bin/docker run -t --rm --name %N \
                                  --network simplesamlphp-network \
                                  --env CONFIG_BASEURLPATH=https://auth.example.com/simplesaml/ \
@@ -39,7 +39,7 @@ ExecStart=/usr/bin/docker run -t --rm --name %N \
                                  --volume /srv/docker/volumes/%N/modules/:/var/simplesamlphp/modules/:Z \
                                  --volume /srv/docker/volumes/%N/templates/:/var/simplesamlphp/templates/:Z \
                                  --volume /srv/docker/volumes/%N/www/:/var/simplesamlphp/www/:Z \
-                                 venatorfox/simplesamlphp:1.17.6
+                                 venatorfox/simplesamlphp:latest
 ExecStop=/usr/bin/docker stop %N
 
 [Install]
